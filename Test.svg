@@ -1,0 +1,30 @@
+<svg version="1.1"  baseProfile="full" width="297mm" height="210mm" xmlns="http://www.w3.org/2000/svg">
+<rect x="20mm" y="20mm" width="70mm" height="25mm" stroke="red" stroke-width="1" fill-opacity="0" /> 
+<text x="20mm" y="18mm" font-family="Verdana" font-size="10" fill="blue" >  ID: 0  </text>
+<rect x="100mm" y="20mm" width="70mm" height="25mm" stroke="red" stroke-width="1" fill-opacity="0" /> 
+<text x="100mm" y="18mm" font-family="Verdana" font-size="10" fill="blue" >  ID: 1  </text>
+<rect x="180mm" y="20mm" width="70mm" height="25mm" stroke="red" stroke-width="1" fill-opacity="0" /> 
+<text x="180mm" y="18mm" font-family="Verdana" font-size="10" fill="blue" >  ID: 2  </text>
+<rect x="20mm" y="55mm" width="70mm" height="25mm" stroke="red" stroke-width="1" fill-opacity="0" /> 
+<text x="20mm" y="53mm" font-family="Verdana" font-size="10" fill="blue" >  ID: 3  </text>
+<rect x="100mm" y="55mm" width="70mm" height="25mm" stroke="red" stroke-width="1" fill-opacity="0" /> 
+<text x="100mm" y="53mm" font-family="Verdana" font-size="10" fill="blue" >  ID: 4  </text>
+<rect x="180mm" y="55mm" width="70mm" height="25mm" stroke="red" stroke-width="1" fill-opacity="0" /> 
+<text x="180mm" y="53mm" font-family="Verdana" font-size="10" fill="blue" >  ID: 5  </text>
+<rect x="20mm" y="90mm" width="70mm" height="25mm" stroke="red" stroke-width="1" fill-opacity="0" /> 
+<text x="20mm" y="88mm" font-family="Verdana" font-size="10" fill="blue" >  ID: 6  </text>
+<rect x="100mm" y="90mm" width="70mm" height="25mm" stroke="red" stroke-width="1" fill-opacity="0" /> 
+<text x="100mm" y="88mm" font-family="Verdana" font-size="10" fill="blue" >  ID: 7  </text>
+<rect x="180mm" y="90mm" width="70mm" height="25mm" stroke="red" stroke-width="1" fill-opacity="0" /> 
+<text x="180mm" y="88mm" font-family="Verdana" font-size="10" fill="blue" >  ID: 8  </text>
+<rect x="20mm" y="125mm" width="70mm" height="25mm" stroke="red" stroke-width="1" fill-opacity="0" /> 
+<text x="20mm" y="123mm" font-family="Verdana" font-size="10" fill="blue" >  ID: 9  </text>
+<rect x="100mm" y="125mm" width="70mm" height="25mm" stroke="red" stroke-width="1" fill-opacity="0" /> 
+<text x="100mm" y="123mm" font-family="Verdana" font-size="10" fill="blue" >  ID: 10  </text>
+<rect x="180mm" y="125mm" width="70mm" height="25mm" stroke="red" stroke-width="1" fill-opacity="0" /> 
+<text x="180mm" y="123mm" font-family="Verdana" font-size="10" fill="blue" >  ID: 11  </text>
+<rect x="20mm" y="160mm" width="70mm" height="25mm" stroke="red" stroke-width="1" fill-opacity="0" /> 
+<text x="20mm" y="158mm" font-family="Verdana" font-size="10" fill="blue" >  ID: 12  </text>
+<rect x="100mm" y="160mm" width="70mm" height="25mm" stroke="red" stroke-width="1" fill-opacity="0" /> 
+<text x="100mm" y="158mm" font-family="Verdana" font-size="10" fill="blue" >  ID: 13  </text>
+</svg>
