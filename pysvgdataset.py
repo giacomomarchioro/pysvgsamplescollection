@@ -1,6 +1,7 @@
 '''
 Py
 '''
+from __future__ import print_function
 
 class sizes:
     def __init__(self):
@@ -41,18 +42,18 @@ class Dataset:
         usable_h = self.data_set_dimension[1] - ver_margin
         space_required_for_sample = self.samples_dimensions[0]+self.minh_spacing_mm
         effective_space = usable_w+self.minh_spacing_mm
-        print effective_space
-        print space_required_for_sample
+        print(effective_space)
+        print(space_required_for_sample)
         samples_per_row = effective_space/space_required_for_sample
-        print samples_per_row
+        print(samples_per_row)
         max_number_of_rows = (usable_h-self.minv_spacing_mm)%self.samples_dimensions[1]
-        print samples_per_row
+        print(samples_per_row)
         if  samples_per_row*max_number_of_rows >= num_samples:
             self.rows = int(round(num_samples/float(samples_per_row)))
             self.cols = samples_per_row
         else:
-            print "Max number of samples: %s" %(samples_per_row*max_number_of_rows)
-            print "Too many samples! Try to decrese margins or spacing!"
+            print("Max number of samples: %s" %(samples_per_row*max_number_of_rows))
+            print("Too many samples! Try to decrese margins or spacing!")
     
     def findcord(self):
         xlen = self.samples_dimensions[0]+self.minh_spacing_mm
@@ -74,27 +75,60 @@ class Dataset:
         with open('%s.svg' %self.name,'w') as f:
             x,y = self.data_set_dimension[0],self.data_set_dimension[1]
             w,h = self.samples_dimensions[0],self.samples_dimensions[1]
-            f.write(r"""<svg version="1.1"  baseProfile="full" width="%smm" height="%smm" xmlns="http://www.w3.org/2000/svg">""" %(x,y) +"\n")
+            f.write(r"""<svg version="1.1"  
+   baseProfile="full" width="%smm" 
+   height="%smm"
+   xmlns="http://www.w3.org/2000/svg">""" %(x,y) +"\n")
             ytit = self.margin_top_mm/2
             xtit = self.margin_left_mm
-            f.write( r"""<text x="%smm" y="%smm" font-family="Verdana" font-size="20" fill="blue" >  DATASET: %s  </text>""" %(xtit,ytit,self.name)+"\n")
+            f.write( r"""<text 
+   x="%smm"
+   y="%smm"
+   font-family="Verdana"
+   font-size="20"
+   fill="blue"> 
+   DATASET: %s  </text>"""%(xtit,ytit,self.name)+"\n")
             if border_as_cutline:
-                f.write( r"""<rect x="0mm" y="0mm" width="%smm" height="%smm" stroke="red" stroke-width="1" fill-opacity="0"  />""" %(x,y) )
+                f.write( r"""<rect
+   x="0mm"
+   y="0mm"
+   width="%smm"
+   height="%smm"
+   stroke="red"
+   stroke-width="1"
+   fill-opacity="0"  />""" %(x,y)+"\n" )
+            f.write( r"""<g id="samples">"""+"\n" )
             for index, i in enumerate(self._samples_coordinates):
-                f.write( r"""<rect x="%smm" y="%smm" width="%smm" height="%smm" stroke="red" stroke-width="1" fill-opacity="0" /> """ %(i[0],i[1],w,h)+"\n")
+                ids = self._samples_ID[index]
+                f.write( r"""   <rect
+      x="%smm"
+      y="%smm"
+      id="%s"
+      width="%smm"
+      height="%smm"
+      stroke="red" 
+      stroke-width="1" 
+      fill-opacity="0" /> """ %(i[0],i[1],ids,w,h)+"\n")
                 ty = i[1] - self.text_y
-                text = self._samples_ID[index]
-                f.write( r"""<text x="%smm" y="%smm" font-family="Verdana" font-size="10" fill="blue" >  ID: %s  </text>""" %(i[0],ty,text)+"\n")
+                
+                f.write( r"""   <text
+      x="%smm" 
+      y="%smm"
+      font-family="Verdana"
+      font-size="10"
+      fill="blue" > 
+      ID: %s  </text>""" %(i[0],ty,ids)+"\n")
+            f.write( r"</g>"+"\n" )
             f.write(r"</svg>")
                 
 
 if __name__ == '__main__':
     h = Dataset()
     s = sizes()
-    h.name = 'Argenti'    
+    h.name = 'Test'    
     h.data_set_dimension = s.hA4
     h.samples_dimensions = s.hMicroscope_slide
-    h.number_of_samples = 14
+    h.number_of_samples = 3
     h.find_cols_rows()
     #h.cols, h.rows = 1,1
     h.findcord()
