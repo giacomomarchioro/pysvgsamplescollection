@@ -20,12 +20,96 @@ class sizes:
 
 
 class Sample:
-    def __init__(self):
-        self.width = 0
-        self.height = 0 
+    def __init__(self,width,height,material,process,thickness='?'):
+        self.width = width
+        self.height = height
         self.layers = []
         self.treatments = []
         self.markers = []
+        self.element = []
+        
+        self.add_layer(self.width,self.height,material,process,thickness)
+        
+    def add_layer(self,
+                  material, 
+                  process, 
+                  thickness='?',
+                  width_percent = 1,
+                  height_percent = 1,
+                  xi = 0,
+                  yi = 0,
+                  xf = None,
+                  yf = None,):
+        
+        if xf == None:
+                xf = self.width*width_percent
+        
+        if yf == None:
+                yf = self.height*height_percent
+        
+        if xi >= xf or yi >= yf:
+            raise ValueError("Intial coordinate exceed final!")
+        
+        if xf > self.width or yf > self.height:
+            raise ValueError("Layer exeed the sample dimension")
+                
+        idx = len(self.layers)
+        info = {'material':material,
+         'process':process,
+         'thickness':thickness,
+         'status':'?',
+         'id':idx,
+         'xi':xi,
+         'yi':yi,
+         'xf':xf,
+         'yf':yf
+            }
+        
+        self.layers.append(info)
+        
+    def add_treatment(self, 
+                  process,
+                  layer=None,
+                  duration='?',
+                  parameters,
+                  width_percent = 1,
+                  height_percent = 1,
+                  xi = 0,
+                  yi = 0,
+                  xf = None,
+                  yf = None,):
+        
+        if xf == None:
+                xf = self.width*width_percent
+        
+        if yf == None:
+                yf = self.height*height_percent
+        
+        if xi >= xf or yi >= yf:
+            raise ValueError("Intial coordinate exceed final!")
+        
+        if xf > self.width or yf > self.height:
+            raise ValueError("Layer exeed the sample dimension")
+                
+        if layer > len(self.layers):
+            raise ValueError("Treatment applied to a layer that does not exists")
+        
+        if layer == None:
+            layer = len(self.layers)
+            
+        info = {'process':process,
+         'process':process,
+         'duration':duration,
+         'parameters':parameters,
+         'status':'?',
+         'layer':layer,
+         'xi':xi,
+         'yi':yi,
+         'xf':xf,
+         'yf':yf
+            }
+        
+        self.treatments.append(info)        
 
 class Dataset:
     def __init__(self,name = 'Dataset'):
@@ -62,13 +146,13 @@ class Dataset:
         vspace_smpl_require = self.samples_dimensions[1]+self.minh_spacing_mm
         #Actually we have to consider that the last sample can be place next to
         # the margin, so we add the spacing to the effective space
-        effective_space = usable_w+self.minh_spacing_mm
-        print(effective_space)
+        effective_hspace = usable_w+self.minh_spacing_mm
+        print(effective_hspace)
         print(hspace_smpl_require)
-        samples_per_row = effective_space/hspace_smpl_require
+        samples_per_row = int(effective_hspace/hspace_smpl_require)
         print(samples_per_row)
-        
-        max_number_of_rows = (usable_h+self.minv_spacing_mm)/vspace_smpl_require
+        effective_vspace = usable_h + self.minv_spacing_mm
+        max_number_of_rows = int(effective_vspace/vspace_smpl_require)
         print('maxnumber',max_number_of_rows)
         if  samples_per_row*max_number_of_rows >= num_samples:
             self.rows = int(math.ceil(num_samples/float(samples_per_row)))

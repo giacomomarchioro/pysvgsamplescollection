@@ -47,4 +47,4 @@ if __name__ == '__main__':
     l = svgarc(xcenter=150,ycenter=190,r=50,startangle=85,endangle=175)
     l2 = svgarc(xcenter=150,ycenter=190,r=50,startangle=265,endangle=355)
     for i in l+l2:
-        print i
+        print(i)
