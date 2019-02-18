@@ -3,123 +3,33 @@ Py
 '''
 from __future__ import print_function
 from circle_sector import draw_mtf_aligment
-import math 
+from sample import Sample
+import math
 
 class sizes:
     def __init__(self):
         self.vMicroscope_slide = [ 25, 70, 1]
         self.vMicroscope_slide_geo = [50, 75, 1]
         self.vMicroscope_slide_petro = [27, 46, 1]
-        self.vA7 = [ 81, 114, 0] 
+        self.vA7 = [ 81, 114, 0]
         self.vA4 = [210, 297, 0]
         self.hMicroscope_slide = [ 70, 25, 1]
         self.hMicroscope_slide_geo = [75, 50, 1]
         self.hMicroscope_slide_petro = [46, 27, 1]
-        self.hA7 = [ 114, 81, 0] 
+        self.hA7 = [ 114, 81, 0]
         self.hA4 = [297,210, 0]
 
-
-class Sample:
-    def __init__(self,width,height,material,process,thickness='?'):
-        self.width = width
-        self.height = height
-        self.layers = []
-        self.treatments = []
-        self.markers = []
-        self.element = []
-        
-        self.add_layer(self.width,self.height,material,process,thickness)
-        
-    def add_layer(self,
-                  material, 
-                  process, 
-                  thickness='?',
-                  width_percent = 1,
-                  height_percent = 1,
-                  xi = 0,
-                  yi = 0,
-                  xf = None,
-                  yf = None,):
-        
-        if xf == None:
-                xf = self.width*width_percent
-        
-        if yf == None:
-                yf = self.height*height_percent
-        
-        if xi >= xf or yi >= yf:
-            raise ValueError("Intial coordinate exceed final!")
-        
-        if xf > self.width or yf > self.height:
-            raise ValueError("Layer exeed the sample dimension")
-                
-        idx = len(self.layers)
-        info = {'material':material,
-         'process':process,
-         'thickness':thickness,
-         'status':'?',
-         'id':idx,
-         'xi':xi,
-         'yi':yi,
-         'xf':xf,
-         'yf':yf
-            }
-        
-        self.layers.append(info)
-        
-    def add_treatment(self, 
-                  process,
-                  layer=None,
-                  duration='?',
-                  parameters,
-                  width_percent = 1,
-                  height_percent = 1,
-                  xi = 0,
-                  yi = 0,
-                  xf = None,
-                  yf = None,):
-        
-        if xf == None:
-                xf = self.width*width_percent
-        
-        if yf == None:
-                yf = self.height*height_percent
-        
-        if xi >= xf or yi >= yf:
-            raise ValueError("Intial coordinate exceed final!")
-        
-        if xf > self.width or yf > self.height:
-            raise ValueError("Layer exeed the sample dimension")
-                
-        if layer > len(self.layers):
-            raise ValueError("Treatment applied to a layer that does not exists")
-        
-        if layer == None:
-            layer = len(self.layers)
-            
-        info = {'process':process,
-         'process':process,
-         'duration':duration,
-         'parameters':parameters,
-         'status':'?',
-         'layer':layer,
-         'xi':xi,
-         'yi':yi,
-         'xf':xf,
-         'yf':yf
-            }
-        
-        self.treatments.append(info)        
 
 class Dataset:
     def __init__(self,name = 'Dataset'):
         self.name = name
         self.data_set_dimension = ['x','y']
-        self.number_of_samples = None 
+        self.samples = []
+        self.number_of_samples = None
         self.samples_dimensions = ['x','y']
-        self.margin_top_mm = 20 
-        self.margin_bottom_mm = 20 
-        self.margin_left_mm = 20 
+        self.margin_top_mm = 20
+        self.margin_bottom_mm = 20
+        self.margin_left_mm = 20
         self.margin_right_mm = 20
         self.text_y = 2
         self.rows = None
@@ -131,11 +41,11 @@ class Dataset:
         self._alignment_MTF_standards = []
         self._samples_coordinates = []
         self._samples_ID = []
-        
+
     def find_cols_rows(self):
         '''
         This method find the max number of samples that can be fit in the
-        dataset. 
+        dataset.
         '''
         num_samples = self.number_of_samples
         hor_margin = self.margin_left_mm + self.margin_right_mm
@@ -160,14 +70,14 @@ class Dataset:
         else:
             print("Max number of samples: %s" %(samples_per_row*max_number_of_rows))
             print("Too many samples! Try to decrese margins or spacing!")
-    
+
     def findcord(self):
         xlen = self.samples_dimensions[0]+self.minh_spacing_mm
         xs = [self.margin_left_mm + xlen*i for i in range(self.cols) ]
         ylen = self.samples_dimensions[1]+self.minv_spacing_mm
         ys = [self.margin_top_mm + ylen*i for i in range(self.rows) ]
         counter = 0
-        
+
         for y in ys:
             for x in xs:
                 print(x,'  ',y)
@@ -177,13 +87,13 @@ class Dataset:
                 else:
                     print(counter)
                     continue
-                
+
     def insert_alignment_MTF_standard(self):
         minsp = min([self.margin_top_mm,
              self.margin_bottom_mm,
-             self.margin_left_mm, 
+             self.margin_left_mm,
         self.margin_right_mm,])
-        
+
         r = minsp*0.9
         spacing = minsp/2.
         r = spacing/2
@@ -191,34 +101,65 @@ class Dataset:
         #Top left
         utl = draw_mtf_aligment(xcenter=spacing, ycenter=spacing,r=r)
         #Top right
-        utr = draw_mtf_aligment(xcenter= x - spacing, ycenter=spacing,r=r) 
+        utr = draw_mtf_aligment(xcenter= x - spacing, ycenter=spacing,r=r)
         #Bottom left
         btl = draw_mtf_aligment(xcenter=spacing, ycenter= y - spacing,r=r)
         #Bottom right
         btr = draw_mtf_aligment(xcenter= x - spacing, ycenter= y - spacing,r=r)
         self._alignment_MTF_standards = utl + utr + btl + btr
-    
-    
-    def save_svg(self,border_as_cutline = True): 
+
+
+    def polulate_with_samples(self,material,process='?',thickness='?'):
+        '''
+        Add sample instance to the dataset.
+        '''
+        width,height,thickness = self.samples_dimensions
+        if width is str or height is str:
+            ValueError("Sample size haven't been set or are incorrect!")
+        for i in range(self.number_of_samples):
+            s = Sample(width = width,
+                       height = height,
+                       material = material,
+                       process = process,
+                       thickness = thickness)
+            self.samples.append(s)
+
+    def add_sample(self,material,process='?'):
+        '''
+        Add sample instance to the dataset.
+        '''
+        width,height,thickness = self.samples_dimensions
+        if width is str or height is str:
+            ValueError("Sample size haven't been set or are incorrect!")
+        s = Sample(width = width,
+                   height = height,
+                   material = material,
+                   process = process,
+                   thickness = thickness)
+        self.samples.append(s)
+        return s
+
+    def save_svg(self,border_as_cutline = True):
         if self._samples_ID == []:
             self._samples_ID = range(self.number_of_samples)
         with open('%s.svg' %self.name,'w') as f:
-            x,y = self.data_set_dimension[0],self.data_set_dimension[1]
-            w,h = self.samples_dimensions[0],self.samples_dimensions[1]
-            f.write(r"""<svg version="1.1"  
-   baseProfile="full" width="%smm" 
+            x,y,_ = self.data_set_dimension
+            w,h,_ = self.samples_dimensions
+            f.write(r"""<svg version="1.1"
+   baseProfile="full" width="%smm"
    height="%smm"
    viewBox="0 0 %s %s"
    xmlns="http://www.w3.org/2000/svg">""" %(x,y,x,y) +"\n")
             ytit = self.margin_top_mm/2
             xtit = self.margin_left_mm
-            f.write( r"""<text 
+            f.write( r"""<text
    x="%s"
    y="%s"
    font-family="Verdana"
    font-size="10"
-   fill="blue"> 
+   fill="blue">
    DATASET: %s  </text>"""%(xtit,ytit,self.name)+"\n")
+
             if border_as_cutline:
                 f.write( r"""<rect
    x="0"
@@ -228,7 +169,7 @@ class Dataset:
    stroke="red"
    stroke-width="1"
    fill-opacity="0"  />""" %(x,y)+"\n" )
-            f.write( r"""<g id="samples">"""+"\n" )
+            f.write( r"""<g id="samples_position">"""+"\n" )
             for index, i in enumerate(self._samples_coordinates):
                 ids = self._samples_ID[index]
                 f.write( r"""   <rect
@@ -237,44 +178,44 @@ class Dataset:
       id="%s"
       width="%s"
       height="%s"
-      stroke="red" 
-      stroke-width="0.5" 
+      stroke="red"
+      stroke-width="0.5"
       fill-opacity="0" /> """ %(i[0],i[1],ids,w,h)+"\n")
                 ty = i[1] - self.text_y
-                
+
                 f.write( r"""   <text
-      x="%s" 
+      x="%s"
       y="%s"
       font-family="Verdana"
       font-size="5"
-      fill="blue" > 
+      fill="blue" >
       ID: %s  </text>""" %(i[0],ty,ids)+"\n")
             f.write( r"</g>"+"\n" )
-            
-        
+
+
             if self._alignment_MTF_standards != []:
-                f.write(r"""<g stroke="none" fill="blue">"""+"\n")
+                f.write(r"""<g id = "MTF" stroke="none" fill="blue">"""+"\n")
                 for i in self._alignment_MTF_standards:
                     f.write(i+"\n")
                 f.write(r"</g>")
-            
+
             #Close the file
             f.write(r"</svg>")
-                
+
 
 if __name__ == '__main__':
     h = Dataset()
     s = sizes()
-    h.name = 'Test2'    
+    h.name = 'Test2'
     #h.data_set_dimension = s.hMicroscope_slide_petro
     h.data_set_dimension = s.hA4
     h.samples_dimensions = s.hMicroscope_slide
-#    h.margin_top_mm = 2 
-#    h.margin_bottom_mm = 2 
-#    h.margin_left_mm = 2 
+#    h.margin_top_mm = 2
+#    h.margin_bottom_mm = 2
+#    h.margin_left_mm = 2
 #    h.margin_right_mm = 2
 #    h.samples_dimensions = [5,5,0]
-    h.number_of_samples = 12 
+    h.number_of_samples = 12
     h.find_cols_rows()
     #h.cols, h.rows = 1,1
     h.findcord()
@@ -285,5 +226,5 @@ if __name__ == '__main__':
 ## for sample in dataset.samples[0:5]:
 #       sample.add_layer(description = "varnish", ends = (half,half))
 #       sample.add_treatment(description = "laser cleaning", params = {"watt":100, "time (sec): 3}, xyorigin = (10,10) xyend = (50,50))
-    
-    # Prit masks 
+
+    # Prit masks
