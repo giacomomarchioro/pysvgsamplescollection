@@ -80,7 +80,7 @@ class Dataset:
         self._samples_coordinates = []
         self._samples_ID = []
 
-    def find_cols_rows(self):
+    def create_sample_holder(self):
         '''
         This method find the max number of samples that can be fit in the
         dataset.
@@ -90,8 +90,8 @@ class Dataset:
         usable_w = self.dataset_dimension[0] - hor_margin
         ver_margin = self.margin_top_mm + self.margin_bottom_mm
         usable_h = self.dataset_dimension[1] - ver_margin
-        hspace_smpl_require = self.samples_dimensions[0]+self.minh_spacing_mm
-        vspace_smpl_require = self.samples_dimensions[1]+self.minh_spacing_mm
+        hspace_smpl_require = self.sample_dimension[0]+self.minh_spacing_mm
+        vspace_smpl_require = self.sample_dimension[1]+self.minh_spacing_mm
         #Actually we have to consider that the last sample can be place next to
         # the margin, so we add the spacing to the effective space
         effective_hspace = usable_w+self.minh_spacing_mm
@@ -109,13 +109,12 @@ class Dataset:
             print("Max number of samples: %s" %(samples_per_row*max_number_of_rows))
             print("Too many samples! Try to decrese margins or spacing!")
 
-    def findcord(self):
-        xlen = self.samples_dimensions[0]+self.minh_spacing_mm
+        xlen = self.sample_dimension[0]+self.minh_spacing_mm
         xs = [self.margin_left_mm + xlen*i for i in range(self.cols) ]
-        ylen = self.samples_dimensions[1]+self.minv_spacing_mm
+        ylen = self.sample_dimension[1]+self.minv_spacing_mm
         ys = [self.margin_top_mm + ylen*i for i in range(self.rows) ]
         counter = 0
-
+        # Now we find the sample coordinates in the space
         for y in ys:
             for x in xs:
                 print(x,'  ',y)
@@ -151,7 +150,7 @@ class Dataset:
         '''
         Add sample instance to the dataset.
         '''
-        width,height,thickness = self.samples_dimensions
+        width,height,thickness = self.sample_dimension
         if width is str or height is str:
             ValueError("Sample size haven't been set or are incorrect!")
         for i in range(self.number_of_samples):
@@ -166,7 +165,7 @@ class Dataset:
         '''
         Add sample instance to the dataset.
         '''
-        width,height,thickness = self.samples_dimensions
+        width,height,thickness = self.sample_dimension
         if width is str or height is str:
             ValueError("Sample size haven't been set or are incorrect!")
         s = Sample(width = width,
@@ -177,18 +176,16 @@ class Dataset:
         self.samples.append(s)
         return s
     
-    def set_dataset_dimension(self):
-        pass
-    
-    def set_sample_dimension(self):
-        pass
+    def set_number_of_samples(self,number):
+        self.number_of_samples = number
 
-    def save_svg(self,border_as_cutline = True):
+        
+    def save_svg(self,border_as_cutline=True, save_samples=True):
         if self._samples_ID == []:
             self._samples_ID = range(self.number_of_samples)
         with open('%s.svg' %self.name,'w') as f:
             x,y,_ = self.dataset_dimension
-            w,h,_ = self.samples_dimensions
+            w,h,_ = self.sample_dimension
             f.write(r"""<svg version="1.1"
    baseProfile="full" width="%smm"
    height="%smm"
@@ -236,27 +233,34 @@ class Dataset:
       ID: %s  </text>""" %(i[0],ty,ids)+"\n")
             f.write( r"</g>"+"\n" )
             
-            if self.samples != []:
+            if self.samples != [] and save_samples:
                 f.write( r"""<g id="samples">"""+"\n" )
                 for index, coord in enumerate(self._samples_coordinates):
                     ids = self._samples_ID[index]
                     sample = self.samples[index]
                     for element in sample.elements.values():
                         if element['kind'] == 'layer':
-                            f.write( r"""   <rect
+                            f.write(r"""   <rect
+      
       x="%s"
       y="%s"
       id="%s"
       width="%s"
       height="%s"
       stroke="yellow"
-      stroke-width="0.2"
-      stroke-opacity="0.2"
-      fill-opacity="0.3" /> """ %(coord[0] + element['xi'],
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" > 
+      <title>material: %s process: %s</title>
+      </rect>
+      """ %(
+                                  coord[0] + element['xi'],
                                   coord[1] + element['yi'],
                                   ids,
                                   element['xf']-element['xi'],
-                                  element['yf']-element['yi'])+"\n")
+                                  element['yf']-element['yi'],
+                                  element['material'],
+                                  element['process'])+"\n")
                         if element['kind'] == 'treatment':
                            f.write( r"""   <rect
       x="%s"
@@ -265,14 +269,20 @@ class Dataset:
       width="%s"
       height="%s"
       stroke="magenta"
-      stroke-opacity="0.2"
-      stroke-width="0.5"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
       fill="magenta"
-      fill-opacity="0.2" /> """ %(coord[0] + element['xi'],
+      fill-opacity="0.2" >
+      <title>process: %s parameters: %s duration: %s</title>
+      </rect>      """ %(coord[0] + element['xi'],
                                   coord[1] + element['yi'],
                                   ids,
                                   element['xf']-element['xi'],
-                                  element['yf']-element['yi'])+"\n")
+                                  element['yf']-element['yi'],
+                                  element['process'],
+                                  element['parameters'],
+                                  element['duration']
+                                  )+"\n")
                 
                 f.write(r"</g>")
                 
@@ -286,26 +296,134 @@ class Dataset:
             f.write(r"</svg>")
 
 
+
+    def save_masks_svg(self,border_as_cutline=True):
+        samx = max([sample._number_of_elements for sample in self.samples])
+        for idc in range(0,samx):
+            with open('%s_mask_%s.svg' %(self.name,idc),'w') as f:
+                x,y,_ = self.dataset_dimension
+                w,h,_ = self.sample_dimension
+                f.write(r"""<svg version="1.1"
+       baseProfile="full" width="%smm"
+       height="%smm"
+       viewBox="0 0 %s %s"
+       xmlns="http://www.w3.org/2000/svg">""" %(x,y,x,y) +"\n")
+                ytit = self.margin_top_mm/2
+                xtit = self.margin_left_mm
+                f.write( r"""<text
+       x="%s"
+       y="%s"
+       font-family="Verdana"
+       font-size="10"
+       fill="blue">
+       MASK %s: %s  </text>"""%(xtit,ytit,idc,self.name)+"\n")
+    
+                if border_as_cutline:
+                    f.write( r"""<rect
+       x="0"
+       y="0"
+       width="%s"
+       height="%s"
+       stroke="red"
+       stroke-width="1"
+       fill-opacity="0"  />""" %(x,y)+"\n" )
+                
+                f.write( r"""<g id="samples">"""+"\n" )
+                for index, coord in enumerate(self._samples_coordinates):
+                    ids = self._samples_ID[index]
+                    sample = self.samples[index]
+                    try:
+                        element = sample.elements[idc]
+                        if element['kind'] == 'layer':
+                                f.write(r"""   <rect         
+                                          x="%s"
+                                          y="%s"
+                                          id="%s"
+                                          width="%s"
+                                          height="%s"
+                                          stroke="red"
+                                          stroke-width="0.4"
+                                          fill-opacity="0.3" > 
+                                          <title>material: %s process: %s</title>
+                                          </rect>
+                                          """ %(
+                                                  coord[0] + element['xi'],
+                                                  coord[1] + element['yi'],
+                                                  ids,
+                                                  element['xf']-element['xi'],
+                                                  element['yf']-element['yi'],
+                                                  element['material'],
+                                                  element['process'])+"\n")
+                                
+                                f.write( r"""   <text
+                                      x="%s"
+                                      y="%s"
+                                      font-family="Verdana"
+                                      font-size="3"
+                                      fill="blue" >
+                                      material: %s; process: %s
+                                      </text>"""%(coord[0],
+                                                  coord[1],
+                                                  element['material'],
+                                                  element['process'])+"\n")
+                                
+                        if element['kind'] == 'treatment':
+                                   f.write( r"""   <rect
+              x="%s"
+              y="%s"
+              id="%s"
+              width="%s"
+              height="%s"
+              stroke="red"
+              stroke-width="0.3"
+              fill-opacity="0.2" >
+              <title>process: %s parameters: %s duration: %s</title>
+              </rect>      """ %(coord[0] + element['xi'],
+                                          coord[1] + element['yi'],
+                                          ids,
+                                          element['xf']-element['xi'],
+                                          element['yf']-element['yi'],
+                                          element['process'],
+                                          element['parameters'],
+                                          element['duration']
+                                          )+"\n")
+    
+                                   f.write( r"""   <text
+                                          x="%s"
+                                          y="%s"
+                                          font-family="Verdana"
+                                          font-size="3"
+                                          fill="blue" >
+                                          process: %s; parameter: %s; duration: %s
+                                          </text>"""%(coord[0],
+                                                      coord[1],
+                                                      element['process'],
+                                                      element['parameters'],
+                                                      element['duration'])+"\n")
+                    except:
+                        IndexError
+                        
+                f.write(r"</g>")
+                #Close the file
+                f.write(r"</svg>")
+
 if __name__ == '__main__':
-    h = Dataset()
-    h.name = 'Test2'
-    #h.data_set_dimension = s.hMicroscope_slide_petro
-#    h.margin_top_mm = 2
-#    h.margin_bottom_mm = 2
-#    h.margin_left_mm = 2
-#    h.margin_right_mm = 2
-#    h.samples_dimensions = [5,5,0]
-    h.number_of_samples = 12
-    h.find_cols_rows()
-    #h.cols, h.rows = 1,1
-    h.findcord()
-    h.populate_with_samples('bronze')
-    for sample in h.samples[1:5]:
+    mydataset = Dataset()
+    mydataset.name = 'Test dataset'
+    mydataset.set_dataset_dimension.A4()
+    mydataset.set_sample_dimension.Microscope_slide()
+    mydataset.set_number_of_samples(15)
+    mydataset.create_sample_holder()
+    mydataset.populate_with_samples('wood')
+    for sample in mydataset.samples[1:]:
+        sample.add_layer("vermilion egg tempera", "brush", width_percent=0.9)
+    for sample in mydataset.samples[1:5]:
         sample.add_layer("varnish", "brush", width_percent=0.7)
-    for sample in h.samples:
-        sample.add_treatment("caleaning", "acetone",width_percent=0.5)
-    h.insert_alignment_MTF_standard()
-    h.save_svg()
+    for sample in mydataset.samples:
+        sample.add_treatment("cleaning", "acetone",width_percent=0.5)
+    mydataset.insert_alignment_MTF_standard()
+    mydataset.save_svg()
+    mydataset.save_masks_svg()
 
 
 ## for sample in dataset.samples[0:5]:
