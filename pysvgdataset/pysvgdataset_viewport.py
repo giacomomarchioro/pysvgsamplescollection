@@ -91,6 +91,7 @@ class Dataset:
         self._samples_coordinates = []
         self._samples_ID = []
         self._scalebar = []
+        self._standards = []
 
     def create_sample_holder(self):
         '''
@@ -147,13 +148,13 @@ class Dataset:
         spacing = minsp/2.
         r = spacing/2
         x,y,_ = self.dataset_dimension
-        #Top left
+        # Top left
         utl = draw_mtf_aligment(xcenter=spacing, ycenter=spacing,r=r)
-        #Top right
+        # Top right
         utr = draw_mtf_aligment(xcenter= x - spacing, ycenter=spacing,r=r)
-        #Bottom left
-        btl = draw_mtf_aligment(xcenter=spacing, ycenter= y - spacing,r=r)
-        #Bottom right
+        # Bottom left
+        btl = draw_mtf_aligment(xcenter=spacing,ycenter= y - spacing,r=r)
+        # Bottom right
         btr = draw_mtf_aligment(xcenter= x - spacing, ycenter= y - spacing,r=r)
         self._alignment_MTF_standards = utl + utr + btl + btr
 
@@ -171,17 +172,80 @@ class Dataset:
         lenght = element_lenght*element_number
         xi = x/2. - lenght/2
         self._scalebar = scalebar(xi=xi,
-                                       yi=yi,
-                                       height=height,
-                                       lenght=None,
-                                       element_lenght=element_lenght,
-                                       element_number=element_number)
+                                  yi=yi,
+                                  height=height,
+                                  lenght=None,
+                                  element_lenght=element_lenght,
+                                  element_number=element_number)
 
-    def populate_with_samples(self,material,process='?',thickness='?'):
+    def insert_standard(self,
+                        shape='rect',
+                        name='standard',
+                        description=None,
+                        mode='cut',
+                        xi=None,
+                        yi=None,
+                        height=None,
+                        width=None,
+                        radius=None):
+        """
+        Insert a standard on the right marign.
+        """
+        x, y, _ = self.dataset_dimension
+        if shape == 'circle':
+            if yi is None:
+                yi = y/2.
+            if xi is None:
+                xi = x - self.margin_right_mm/2.
+            if radius is None:
+                radius = self.margin_right_mm/3.
+            mst = """<circle cx="%s" cy="%s" r="%s">
+            <title>name: %s
+            description: %s
+            </title>
+            </circle>""" % (xi,
+                            yi,
+                            radius,
+                            name,
+                            description)
+            self._standards.append(mst)
+
+        if shape == 'rect':
+            if yi is None:
+                yi = y/2.
+            if xi is None:
+                xi = x - self.margin_right_mm/3.*2
+            if width is None:
+                width = self.margin_right_mm/3.
+            if height is None:
+                height = y/10
+
+            mst = """<rect
+            x="%s"
+            y="%s"
+            id="%s"
+            width="%s"
+            height="%s"
+            stroke="red"
+            stroke-width="0.5"
+            fill-opacity="0">
+            <title>name: %s
+            description: %s
+            </title>
+            </rect>""" % (xi,
+                          yi,
+                          len(self._standards),
+                          width,
+                          height,
+                          name,
+                          description)
+            self._standards.append(mst)
+
+    def populate_with_samples(self, material, process='?', thickness='?'):
         '''
         Add sample instance to the dataset.
         '''
-        width,height,thickness = self.sample_dimension
+        width, height, thickness = self.sample_dimension
         if width is str or height is str:
             ValueError("Sample size haven't been set or are incorrect!")
         for i in range(self.number_of_samples):
@@ -192,11 +256,11 @@ class Dataset:
                        thickness=thickness)
             self.samples.append(s)
 
-    def add_sample(self,material,process='?'):
+    def add_sample(self, material, process='?'):
         '''
         Add sample instance to the dataset.
         '''
-        width,height,thickness = self.sample_dimension
+        width, height, thickness = self.sample_dimension
         if width is str or height is str:
             ValueError("Sample size haven't been set or are incorrect!")
         s = Sample(width=width,
@@ -207,18 +271,18 @@ class Dataset:
         self.samples.append(s)
         return s
 
-    def set_number_of_samples(self,number):
+    def set_number_of_samples(self, number):
         self.number_of_samples = number
 
 
-    def save_svg(self,border_as_cutline=True, save_samples=True,name = None):
+    def save_svg(self, border_as_cutline=True, save_samples=True, name=None):
         if self._samples_ID == []:
             self._samples_ID = range(self.number_of_samples)
         if name is None:
             name = self.name
-        with open('%s.svg' %name,'w') as f:
-            x,y,_ = self.dataset_dimension
-            w,h,_ = self.sample_dimension
+        with open('%s.svg' % name, 'w') as f:
+            x, y, _ = self.dataset_dimension
+            w, h, _ = self.sample_dimension
             f.write(r"""<svg version="1.1"
    baseProfile="full" width="%smm"
    height="%smm"
@@ -330,6 +394,11 @@ class Dataset:
             if self._scalebar != []:
                 f.write(r"""<g id = "scalebar" stroke="none" fill="blue">"""+"\n")
                 for i in self._scalebar:
+                    f.write(i+"\n")
+                f.write(r"</g>")
+            if self._standards != []:
+                f.write(r"""<g id = "standards" stroke="none">"""+"\n")
+                for i in self._standards:
                     f.write(i+"\n")
                 f.write(r"</g>")
             #Close the file
@@ -466,6 +535,7 @@ if __name__ == '__main__':
         sample.add_treatment("cleaning", "acetone",width_percent=0.5)
     mydataset.insert_alignment_MTF_standard()
     mydataset.insert_scalebar()
+    mydataset.insert_standard()
     mydataset.save_svg()
     mydataset.save_masks_svg()
 
