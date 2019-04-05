@@ -1,62 +1,73 @@
 '''
-Py
+Main module for creating a dataset and saving it in svg format.
 '''
 from __future__ import print_function
 from circle_sector import draw_mtf_aligment
+from scalebar import scalebar
 from sample import Sample
 import math
 
 
-    
-  
-
-
 class Dataset:
-    
+    """
+    The dataset class rappresent the dataset itself.
+
+    It contains the methods for adding the samples and saving them to the svg
+    file.
+    """
+
     class sizes:
-        def __init__(self,d,kind):
+        """
+        Standard sizes.
+
+        This class is used for facilitating the setting of the sizes of the
+        dataset element.
+        """
+
+        def __init__(self, d, kind):
+            """Use for convinence."""
             self._d = d
             self._kind = kind
-        
+
         def _assign(self, dim, kind):
             if kind == 'dataset':
                 self._d.dataset_dimension = dim
             if kind == 'sample':
                 self._d.sample_dimension = dim
-            
+
         def vMicroscope_slide(self):
-           self._assign([ 25, 70, 1],self._kind)
-            
-        def vMicroscope_slide_geo(self): 
-           self._assign([50, 75, 1],self._kind)
-            
-        def vMicroscope_slide_petro(self): 
-           self._assign([27, 46, 1],self._kind)
-            
+            self._assign([25, 70, 1], self._kind)
+
+        def vMicroscope_slide_geo(self):
+            self._assign([50, 75, 1], self._kind)
+
+        def vMicroscope_slide_petro(self):
+            self._assign([27, 46, 1], self._kind)
+
         def vA7(self):
-           self._assign([81, 114, 0],self._kind)
-            
-        def vA4(self): 
-           self._assign([210, 297, 0],self._kind)
-            
+            self._assign([81, 114, 0], self._kind)
+
+        def vA4(self):
+           self._assign([210, 297, 0], self._kind)
+
         def Microscope_slide(self):
-           self._assign([ 70, 25, 1],self._kind)
-            
+           self._assign([ 70, 25, 1], self._kind)
+
         def Microscope_slide_geo(self):
-           self._assign([75, 50, 1],self._kind)
-            
-        def Microscope_slide_petro(self): 
-           self._assign([46, 27, 1],self._kind)
-            
+           self._assign([75, 50, 1], self._kind)
+
+        def Microscope_slide_petro(self):
+           self._assign([46, 27, 1], self._kind)
+
         def A7(self):
-           self._assign([ 114, 81, 0],self._kind)
-            
+           self._assign([ 114, 81, 0], self._kind)
+
         def A4(self):
            self._assign([297,210, 0],self._kind)
-        
+
         def custom(self,w,h,d):
            self._assign( [w,h,d],self._kind)
-            
+
     def __init__(self,name = 'Dataset'):
         self.name = name
         self.dataset_dimension = ['x','y']
@@ -79,6 +90,7 @@ class Dataset:
         self._alignment_MTF_standards = []
         self._samples_coordinates = []
         self._samples_ID = []
+        self._scalebar = []
 
     def create_sample_holder(self):
         '''
@@ -101,8 +113,8 @@ class Dataset:
         print(samples_per_row)
         effective_vspace = usable_h + self.minv_spacing_mm
         max_number_of_rows = int(effective_vspace/vspace_smpl_require)
-        print('maxnumber',max_number_of_rows)
-        if  samples_per_row*max_number_of_rows >= num_samples:
+        print('maxnumber', max_number_of_rows)
+        if samples_per_row*max_number_of_rows >= num_samples:
             self.rows = int(math.ceil(num_samples/float(samples_per_row)))
             self.cols = samples_per_row
         else:
@@ -145,6 +157,25 @@ class Dataset:
         btr = draw_mtf_aligment(xcenter= x - spacing, ycenter= y - spacing,r=r)
         self._alignment_MTF_standards = utl + utr + btl + btr
 
+    def insert_scalebar(self):
+        x, y, _ = self.dataset_dimension
+        height = self.margin_bottom_mm/3.
+        yi = y - self.margin_bottom_mm/3.*2
+        element_number = 4
+        if y/10. > 10:
+            element_lenght = 10
+        elif y/5. > 10:
+            element_lenght = 5
+        else:
+            element_lenght = 1
+        lenght = element_lenght*element_number
+        xi = x/2. - lenght/2
+        self._scalebar = scalebar(xi=xi,
+                                       yi=yi,
+                                       height=height,
+                                       lenght=None,
+                                       element_lenght=element_lenght,
+                                       element_number=element_number)
 
     def populate_with_samples(self,material,process='?',thickness='?'):
         '''
@@ -154,11 +185,11 @@ class Dataset:
         if width is str or height is str:
             ValueError("Sample size haven't been set or are incorrect!")
         for i in range(self.number_of_samples):
-            s = Sample(width = width,
-                       height = height,
-                       material = material,
-                       process = process,
-                       thickness = thickness)
+            s = Sample(width=width,
+                       height=height,
+                       material=material,
+                       process=process,
+                       thickness=thickness)
             self.samples.append(s)
 
     def add_sample(self,material,process='?'):
@@ -168,22 +199,24 @@ class Dataset:
         width,height,thickness = self.sample_dimension
         if width is str or height is str:
             ValueError("Sample size haven't been set or are incorrect!")
-        s = Sample(width = width,
-                   height = height,
-                   material = material,
-                   process = process,
-                   thickness = thickness)
+        s = Sample(width=width,
+                   height=height,
+                   material=material,
+                   process=process,
+                   thickness=thickness)
         self.samples.append(s)
         return s
-    
+
     def set_number_of_samples(self,number):
         self.number_of_samples = number
 
-        
-    def save_svg(self,border_as_cutline=True, save_samples=True):
+
+    def save_svg(self,border_as_cutline=True, save_samples=True,name = None):
         if self._samples_ID == []:
             self._samples_ID = range(self.number_of_samples)
-        with open('%s.svg' %self.name,'w') as f:
+        if name is None:
+            name = self.name
+        with open('%s.svg' %name,'w') as f:
             x,y,_ = self.dataset_dimension
             w,h,_ = self.sample_dimension
             f.write(r"""<svg version="1.1"
@@ -232,7 +265,7 @@ class Dataset:
       fill="blue" >
       ID: %s  </text>""" %(i[0],ty,ids)+"\n")
             f.write( r"</g>"+"\n" )
-            
+
             if self.samples != [] and save_samples:
                 f.write( r"""<g id="samples">"""+"\n" )
                 for index, coord in enumerate(self._samples_coordinates):
@@ -241,7 +274,7 @@ class Dataset:
                     for element in sample.elements.values():
                         if element['kind'] == 'layer':
                             f.write(r"""   <rect
-      
+
       x="%s"
       y="%s"
       id="%s"
@@ -250,8 +283,9 @@ class Dataset:
       stroke="yellow"
       stroke-width="0.4"
       stroke-opacity="0.8"
-      fill-opacity="0.3" > 
-      <title>material: %s process: %s</title>
+      fill-opacity="0.3" >
+      <title>material: %s
+    process: %s</title>
       </rect>
       """ %(
                                   coord[0] + element['xi'],
@@ -273,7 +307,9 @@ class Dataset:
       stroke-width="0.3"
       fill="magenta"
       fill-opacity="0.2" >
-      <title>process: %s parameters: %s duration: %s</title>
+      <title>process: %s
+    parameters: %s
+    duration: %s</title>
       </rect>      """ %(coord[0] + element['xi'],
                                   coord[1] + element['yi'],
                                   ids,
@@ -283,15 +319,19 @@ class Dataset:
                                   element['parameters'],
                                   element['duration']
                                   )+"\n")
-                
+
                 f.write(r"</g>")
-                
+
             if self._alignment_MTF_standards != []:
                 f.write(r"""<g id = "MTF" stroke="none" fill="blue">"""+"\n")
                 for i in self._alignment_MTF_standards:
                     f.write(i+"\n")
                 f.write(r"</g>")
-
+            if self._scalebar != []:
+                f.write(r"""<g id = "scalebar" stroke="none" fill="blue">"""+"\n")
+                for i in self._scalebar:
+                    f.write(i+"\n")
+                f.write(r"</g>")
             #Close the file
             f.write(r"</svg>")
 
@@ -299,7 +339,10 @@ class Dataset:
 
     def save_masks_svg(self,border_as_cutline=True):
         samx = max([sample._number_of_elements for sample in self.samples])
-        for idc in range(0,samx):
+        # This saves only the sample holder
+        self.save_svg(border_as_cutline=True, save_samples=False,name ='sampleholder')
+        # These are
+        for idc in range(1,samx):
             with open('%s_mask_%s.svg' %(self.name,idc),'w') as f:
                 x,y,_ = self.dataset_dimension
                 w,h,_ = self.sample_dimension
@@ -317,7 +360,7 @@ class Dataset:
        font-size="10"
        fill="blue">
        MASK %s: %s  </text>"""%(xtit,ytit,idc,self.name)+"\n")
-    
+
                 if border_as_cutline:
                     f.write( r"""<rect
        x="0"
@@ -327,7 +370,7 @@ class Dataset:
        stroke="red"
        stroke-width="1"
        fill-opacity="0"  />""" %(x,y)+"\n" )
-                
+
                 f.write( r"""<g id="samples">"""+"\n" )
                 for index, coord in enumerate(self._samples_coordinates):
                     ids = self._samples_ID[index]
@@ -335,7 +378,7 @@ class Dataset:
                     try:
                         element = sample.elements[idc]
                         if element['kind'] == 'layer':
-                                f.write(r"""   <rect         
+                                f.write(r"""   <rect
                                           x="%s"
                                           y="%s"
                                           id="%s"
@@ -343,7 +386,7 @@ class Dataset:
                                           height="%s"
                                           stroke="red"
                                           stroke-width="0.4"
-                                          fill-opacity="0.3" > 
+                                          fill-opacity="0.3" >
                                           <title>material: %s process: %s</title>
                                           </rect>
                                           """ %(
@@ -354,7 +397,7 @@ class Dataset:
                                                   element['yf']-element['yi'],
                                                   element['material'],
                                                   element['process'])+"\n")
-                                
+
                                 f.write( r"""   <text
                                       x="%s"
                                       y="%s"
@@ -366,7 +409,7 @@ class Dataset:
                                                   coord[1],
                                                   element['material'],
                                                   element['process'])+"\n")
-                                
+
                         if element['kind'] == 'treatment':
                                    f.write( r"""   <rect
               x="%s"
@@ -387,7 +430,7 @@ class Dataset:
                                           element['parameters'],
                                           element['duration']
                                           )+"\n")
-    
+
                                    f.write( r"""   <text
                                           x="%s"
                                           y="%s"
@@ -395,14 +438,14 @@ class Dataset:
                                           font-size="3"
                                           fill="blue" >
                                           process: %s; parameter: %s; duration: %s
-                                          </text>"""%(coord[0],
-                                                      coord[1],
-                                                      element['process'],
-                                                      element['parameters'],
-                                                      element['duration'])+"\n")
+                                          </text>""" % (coord[0],
+                                                        coord[1],
+                                                        element['process'],
+                                                        element['parameters'],
+                                                        element['duration']) +"\n")
                     except:
                         IndexError
-                        
+
                 f.write(r"</g>")
                 #Close the file
                 f.write(r"</svg>")
@@ -422,6 +465,7 @@ if __name__ == '__main__':
     for sample in mydataset.samples:
         sample.add_treatment("cleaning", "acetone",width_percent=0.5)
     mydataset.insert_alignment_MTF_standard()
+    mydataset.insert_scalebar()
     mydataset.save_svg()
     mydataset.save_masks_svg()
 
