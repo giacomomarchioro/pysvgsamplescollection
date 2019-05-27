@@ -27,7 +27,7 @@ def scalebar(xi,
            stroke="blue"
            stroke-width="0"
            fill="blue"/>""" % (xn,
-                               yi + half_height*zero1.next(),
+                               yi + half_height*next(zero1),
                                element_lenght,
                                half_height,)+"\n")
         lines.append(r'<text x="%s" y="%s" fill="blue" font-size="%s" '

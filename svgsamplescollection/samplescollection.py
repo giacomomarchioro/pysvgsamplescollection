@@ -1,10 +1,9 @@
 '''
 Main module for creating a dataset and saving it in svg format.
 '''
-from __future__ import print_function
-from circle_sector import draw_mtf_aligment
-from scalebar import scalebar
-from sample import Sample
+from .circle_sector import draw_mtf_aligment
+from .scalebar import scalebar
+from .sample import Sample
 import math
 
 
@@ -121,6 +120,7 @@ class Samplescollection:
         else:
             print("Max number of samples: %s" %(samples_per_row*max_number_of_rows))
             print("Too many samples! Try to decrese margins or spacing!")
+            return False
 
         xlen = self.sample_dimension[0]+self.minh_spacing_mm
         xs = [self.margin_left_mm + xlen*i for i in range(self.cols) ]
@@ -537,7 +537,7 @@ if __name__ == '__main__':
     for sample in mydataset.samples:
         sample.add_treatment("cleaning", "acetone",width_percent=0.5)
     mydataset.insert_alignment_MTF_standard()
-    mydataset.insert_scalebar()
+    #mydataset.insert_scalebar()
     mydataset.insert_standard()
     mydataset.save_svg()
     mydataset.save_masks_svg()
