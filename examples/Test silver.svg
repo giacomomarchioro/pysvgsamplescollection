@@ -1,0 +1,980 @@
+<svg version="1.1"
+   baseProfile="full" width="297mm"
+   height="210mm"
+   viewBox="0 0 297 210"
+   xmlns="http://www.w3.org/2000/svg">
+<text
+   x="20"
+   y="2.5"
+   id="collection_name"
+   font-family="Verdana"
+   font-size="10"
+   fill="blue">
+   DATASET: Test silver  </text>
+<rect
+   x="0"
+   y="0"
+   id="collection_border"
+   width="297"
+   height="210"
+   stroke="red"
+   stroke-width="1"
+   fill-opacity="0"  />
+<g id="samples_position">
+   <rect
+      x="20"
+      y="5"
+      id="0"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="20"
+      y="3"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 0  </text>
+   <rect
+      x="100"
+      y="5"
+      id="1"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="100"
+      y="3"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 1  </text>
+   <rect
+      x="180"
+      y="5"
+      id="2"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="180"
+      y="3"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 2  </text>
+   <rect
+      x="20"
+      y="35"
+      id="3"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="20"
+      y="33"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 3  </text>
+   <rect
+      x="100"
+      y="35"
+      id="4"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="100"
+      y="33"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 4  </text>
+   <rect
+      x="180"
+      y="35"
+      id="5"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="180"
+      y="33"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 5  </text>
+   <rect
+      x="20"
+      y="65"
+      id="6"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="20"
+      y="63"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 6  </text>
+   <rect
+      x="100"
+      y="65"
+      id="7"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="100"
+      y="63"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 7  </text>
+   <rect
+      x="180"
+      y="65"
+      id="8"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="180"
+      y="63"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 8  </text>
+   <rect
+      x="20"
+      y="95"
+      id="9"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="20"
+      y="93"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 9  </text>
+   <rect
+      x="100"
+      y="95"
+      id="10"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="100"
+      y="93"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 10  </text>
+   <rect
+      x="180"
+      y="95"
+      id="11"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="180"
+      y="93"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 11  </text>
+   <rect
+      x="20"
+      y="125"
+      id="12"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="20"
+      y="123"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 12  </text>
+   <rect
+      x="100"
+      y="125"
+      id="13"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="100"
+      y="123"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 13  </text>
+   <rect
+      x="180"
+      y="125"
+      id="14"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="180"
+      y="123"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 14  </text>
+</g>
+<g id="samples">
+   <rect
+
+      x="20"
+      y="5"
+      id="0"
+      width="70"
+      height="25"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: silver
+    process: ?</title>
+      </rect>
+      
+   <rect
+      x="20"
+      y="5"
+      id="0"
+      width="35.0"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cleaning
+    parameters: acetone
+    duration: ?</title>
+      </rect>      
+   <rect
+
+      x="100"
+      y="5"
+      id="1"
+      width="70"
+      height="25"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: silver
+    process: ?</title>
+      </rect>
+      
+   <rect
+      x="100"
+      y="5"
+      id="1"
+      width="70"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cheased
+    parameters: graver
+    duration: ?</title>
+      </rect>      
+   <rect
+
+      x="100"
+      y="5"
+      id="1"
+      width="49.0"
+      height="25"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: varnish
+    process: nitorcellulose lacquer</title>
+      </rect>
+      
+   <rect
+      x="100"
+      y="5"
+      id="1"
+      width="35.0"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cleaning
+    parameters: acetone
+    duration: ?</title>
+      </rect>      
+   <rect
+
+      x="180"
+      y="5"
+      id="2"
+      width="70"
+      height="25"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: silver
+    process: ?</title>
+      </rect>
+      
+   <rect
+      x="180"
+      y="5"
+      id="2"
+      width="70"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cheased
+    parameters: graver
+    duration: ?</title>
+      </rect>      
+   <rect
+
+      x="180"
+      y="5"
+      id="2"
+      width="49.0"
+      height="25"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: varnish
+    process: nitorcellulose lacquer</title>
+      </rect>
+      
+   <rect
+      x="180"
+      y="5"
+      id="2"
+      width="35.0"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cleaning
+    parameters: acetone
+    duration: ?</title>
+      </rect>      
+   <rect
+
+      x="20"
+      y="35"
+      id="3"
+      width="70"
+      height="25"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: silver
+    process: ?</title>
+      </rect>
+      
+   <rect
+      x="20"
+      y="35"
+      id="3"
+      width="70"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cheased
+    parameters: graver
+    duration: ?</title>
+      </rect>      
+   <rect
+
+      x="20"
+      y="35"
+      id="3"
+      width="49.0"
+      height="25"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: varnish
+    process: nitorcellulose lacquer</title>
+      </rect>
+      
+   <rect
+      x="20"
+      y="35"
+      id="3"
+      width="35.0"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cleaning
+    parameters: acetone
+    duration: ?</title>
+      </rect>      
+   <rect
+
+      x="100"
+      y="35"
+      id="4"
+      width="70"
+      height="25"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: silver
+    process: ?</title>
+      </rect>
+      
+   <rect
+      x="100"
+      y="35"
+      id="4"
+      width="70"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cheased
+    parameters: graver
+    duration: ?</title>
+      </rect>      
+   <rect
+
+      x="100"
+      y="35"
+      id="4"
+      width="49.0"
+      height="25"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: varnish
+    process: nitorcellulose lacquer</title>
+      </rect>
+      
+   <rect
+      x="100"
+      y="35"
+      id="4"
+      width="35.0"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cleaning
+    parameters: acetone
+    duration: ?</title>
+      </rect>      
+   <rect
+
+      x="180"
+      y="35"
+      id="5"
+      width="70"
+      height="25"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: silver
+    process: ?</title>
+      </rect>
+      
+   <rect
+      x="180"
+      y="35"
+      id="5"
+      width="70"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cheased
+    parameters: graver
+    duration: ?</title>
+      </rect>      
+   <rect
+      x="180"
+      y="35"
+      id="5"
+      width="35.0"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cleaning
+    parameters: acetone
+    duration: ?</title>
+      </rect>      
+   <rect
+
+      x="20"
+      y="65"
+      id="6"
+      width="70"
+      height="25"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: silver
+    process: ?</title>
+      </rect>
+      
+   <rect
+      x="20"
+      y="65"
+      id="6"
+      width="70"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cheased
+    parameters: graver
+    duration: ?</title>
+      </rect>      
+   <rect
+      x="20"
+      y="65"
+      id="6"
+      width="35.0"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cleaning
+    parameters: acetone
+    duration: ?</title>
+      </rect>      
+   <rect
+
+      x="100"
+      y="65"
+      id="7"
+      width="70"
+      height="25"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: silver
+    process: ?</title>
+      </rect>
+      
+   <rect
+      x="100"
+      y="65"
+      id="7"
+      width="70"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cheased
+    parameters: graver
+    duration: ?</title>
+      </rect>      
+   <rect
+      x="100"
+      y="65"
+      id="7"
+      width="35.0"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cleaning
+    parameters: acetone
+    duration: ?</title>
+      </rect>      
+   <rect
+
+      x="180"
+      y="65"
+      id="8"
+      width="70"
+      height="25"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: silver
+    process: ?</title>
+      </rect>
+      
+   <rect
+      x="180"
+      y="65"
+      id="8"
+      width="35.0"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cleaning
+    parameters: acetone
+    duration: ?</title>
+      </rect>      
+   <rect
+
+      x="20"
+      y="95"
+      id="9"
+      width="70"
+      height="25"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: silver
+    process: ?</title>
+      </rect>
+      
+   <rect
+      x="20"
+      y="95"
+      id="9"
+      width="35.0"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cleaning
+    parameters: acetone
+    duration: ?</title>
+      </rect>      
+   <rect
+
+      x="100"
+      y="95"
+      id="10"
+      width="70"
+      height="25"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: silver
+    process: ?</title>
+      </rect>
+      
+   <rect
+      x="100"
+      y="95"
+      id="10"
+      width="35.0"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cleaning
+    parameters: acetone
+    duration: ?</title>
+      </rect>      
+   <rect
+
+      x="180"
+      y="95"
+      id="11"
+      width="70"
+      height="25"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: silver
+    process: ?</title>
+      </rect>
+      
+   <rect
+      x="180"
+      y="95"
+      id="11"
+      width="35.0"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cleaning
+    parameters: acetone
+    duration: ?</title>
+      </rect>      
+   <rect
+
+      x="20"
+      y="125"
+      id="12"
+      width="70"
+      height="25"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: silver
+    process: ?</title>
+      </rect>
+      
+   <rect
+      x="20"
+      y="125"
+      id="12"
+      width="35.0"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cleaning
+    parameters: acetone
+    duration: ?</title>
+      </rect>      
+   <rect
+
+      x="100"
+      y="125"
+      id="13"
+      width="70"
+      height="25"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: silver
+    process: ?</title>
+      </rect>
+      
+   <rect
+      x="100"
+      y="125"
+      id="13"
+      width="35.0"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cleaning
+    parameters: acetone
+    duration: ?</title>
+      </rect>      
+   <rect
+
+      x="180"
+      y="125"
+      id="14"
+      width="70"
+      height="25"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: silver
+    process: ?</title>
+      </rect>
+      
+   <rect
+      x="180"
+      y="125"
+      id="14"
+      width="35.0"
+      height="25"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: cleaning
+    parameters: acetone
+    duration: ?</title>
+      </rect>      
+</g><g id = "MTF" stroke="none" fill="blue">
+<path d=" 
+M 2.6089446784345727 1.2547566273853181
+A 1.25 1.25 0 0 0 1.2547566273853181 2.3910553215654273
+L 2.5 2.5
+Z"/>
+<path d=" 
+M 2.3910553215654273 3.7452433726146817
+A 1.25 1.25 0 0 0 3.7452433726146817 2.6089446784345727
+L 2.5 2.5
+Z"/>
+<path d=" 
+M 294.60894467843457 1.2547566273853181
+A 1.25 1.25 0 0 0 293.2547566273853 2.3910553215654273
+L 294.5 2.5
+Z"/>
+<path d=" 
+M 294.39105532156543 3.7452433726146817
+A 1.25 1.25 0 0 0 295.7452433726147 2.6089446784345727
+L 294.5 2.5
+Z"/>
+<path d=" 
+M 2.6089446784345727 206.25475662738532
+A 1.25 1.25 0 0 0 1.2547566273853181 207.39105532156543
+L 2.5 207.5
+Z"/>
+<path d=" 
+M 2.3910553215654273 208.74524337261468
+A 1.25 1.25 0 0 0 3.7452433726146817 207.60894467843457
+L 2.5 207.5
+Z"/>
+<path d=" 
+M 294.60894467843457 206.25475662738532
+A 1.25 1.25 0 0 0 293.2547566273853 207.39105532156543
+L 294.5 207.5
+Z"/>
+<path d=" 
+M 294.39105532156543 208.74524337261468
+A 1.25 1.25 0 0 0 295.7452433726147 207.60894467843457
+L 294.5 207.5
+Z"/>
+</g><g id = "scalebar" stroke="none" fill="blue">
+<rect
+           x="128.5"
+           y="207.5"
+           width="10"
+           height="0.8333333333333334"
+           stroke="blue"
+           stroke-width="0"
+           fill="blue"/>
+
+<text x="128.5" y="206.5" fill="blue" font-size="0.8333333333333334" text-anchor="middle" >0 </text>
+<rect
+           x="138.5"
+           y="206.66666666666666"
+           width="10"
+           height="0.8333333333333334"
+           stroke="blue"
+           stroke-width="0"
+           fill="blue"/>
+
+<text x="138.5" y="206.5" fill="blue" font-size="0.8333333333333334" text-anchor="middle" >10 </text>
+<rect
+           x="148.5"
+           y="207.5"
+           width="10"
+           height="0.8333333333333334"
+           stroke="blue"
+           stroke-width="0"
+           fill="blue"/>
+
+<text x="148.5" y="206.5" fill="blue" font-size="0.8333333333333334" text-anchor="middle" >20 </text>
+<rect
+           x="158.5"
+           y="206.66666666666666"
+           width="10"
+           height="0.8333333333333334"
+           stroke="blue"
+           stroke-width="0"
+           fill="blue"/>
+
+<text x="158.5" y="206.5" fill="blue" font-size="0.8333333333333334" text-anchor="middle" >30 </text>
+<text x="168.5" y="206.5" fill="blue" font-size="0.8333333333333334" text-anchor="middle" >40 </text>
+<text x="169.5" y="207.5" fill="blue" font-size="0.8333333333333334">
+        mm </text>
+</g><g id = "standards" stroke="none">
+<rect
+            x="283.6666666666667"
+            y="105.0"
+            id="0"
+            width="6.666666666666667"
+            height="21.0"
+            stroke="red"
+            stroke-width="0.5"
+            fill-opacity="0">
+            <title>name: standard
+            description: None
+            </title>
+            </rect>
+</g></svg>

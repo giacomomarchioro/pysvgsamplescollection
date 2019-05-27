@@ -1,8 +1,6 @@
 
 *.pyc
 
-*.svg
-
 *.png
 
 pysvgdataset/\.DS_Store
