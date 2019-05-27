@@ -4,3 +4,7 @@
 *.svg
 
 *.png
+
+pysvgdataset/\.DS_Store
+
+\.DS_Store

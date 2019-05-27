@@ -8,9 +8,9 @@ from sample import Sample
 import math
 
 
-class Dataset:
+class Samplescollection:
     """
-    The dataset class rappresent the dataset itself.
+    The Samplescollection class rappresent the Samplescollection itself.
 
     It contains the methods for adding the samples and saving them to the svg
     file.
