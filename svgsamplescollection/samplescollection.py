@@ -290,9 +290,11 @@ class Samplescollection:
    xmlns="http://www.w3.org/2000/svg">""" %(x,y,x,y) +"\n")
             ytit = self.margin_top_mm/2
             xtit = self.margin_left_mm
+            # Collection name
             f.write( r"""<text
    x="%s"
    y="%s"
+   id="collection_name"
    font-family="Verdana"
    font-size="10"
    fill="blue">
@@ -302,6 +304,7 @@ class Samplescollection:
                 f.write( r"""<rect
    x="0"
    y="0"
+   id="collection_border"
    width="%s"
    height="%s"
    stroke="red"
