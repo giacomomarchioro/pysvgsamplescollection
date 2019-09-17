@@ -1,9 +1,9 @@
 '''
 Main module for creating a dataset and saving it in svg format.
 '''
-from .circle_sector import draw_mtf_aligment
-from .scalebar import scalebar
-from .sample import Sample
+from circle_sector import draw_mtf_aligment
+from scalebar import scalebar
+from sample import Sample
 import math
 
 
@@ -298,7 +298,7 @@ class Samplescollection:
    font-family="Verdana"
    font-size="10"
    fill="blue">
-   DATASET: %s  </text>"""%(xtit,ytit,self.name)+"\n")
+   %s  </text>"""%(xtit,ytit,self.name)+"\n")
 
             if border_as_cutline:
                 f.write( r"""<rect
@@ -523,24 +523,24 @@ class Samplescollection:
                 f.write(r"</svg>")
 
 if __name__ == '__main__':
-    mydataset = Dataset()
-    mydataset.name = 'Test dataset'
-    mydataset.set_dataset_dimension.A4()
-    mydataset.set_sample_dimension.Microscope_slide()
-    mydataset.set_number_of_samples(15)
-    mydataset.create_sample_holder()
-    mydataset.populate_with_samples('wood')
-    for sample in mydataset.samples[1:]:
+    mycollection = Samplescollection()
+    mycollection.name = 'Test samples collection'
+    mycollection.set_dataset_dimension.A4()
+    mycollection.set_sample_dimension.Microscope_slide()
+    mycollection.set_number_of_samples(15)
+    mycollection.create_sample_holder()
+    mycollection.populate_with_samples('wood')
+    for sample in mycollection.samples[1:]:
         sample.add_layer("vermilion egg tempera", "brush", width_percent=0.9)
-    for sample in mydataset.samples[1:5]:
+    for sample in mycollection.samples[1:5]:
         sample.add_layer("varnish", "brush", width_percent=0.7)
-    for sample in mydataset.samples:
+    for sample in mycollection.samples:
         sample.add_treatment("cleaning", "acetone",width_percent=0.5)
-    mydataset.insert_alignment_MTF_standard()
-    #mydataset.insert_scalebar()
-    mydataset.insert_standard()
-    mydataset.save_svg()
-    mydataset.save_masks_svg()
+    mycollection.insert_alignment_MTF_standard()
+    mycollection.insert_scalebar()
+    mycollection.insert_standard()
+    mycollection.save_svg()
+    mycollection.save_masks_svg()
 
 
 ## for sample in dataset.samples[0:5]:
