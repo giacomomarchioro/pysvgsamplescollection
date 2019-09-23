@@ -542,9 +542,4 @@ if __name__ == '__main__':
     mycollection.save_svg()
     mycollection.save_masks_svg()
 
-
-## for sample in dataset.samples[0:5]:
-#       sample.add_layer(description = "varnish", ends = (half,half))
-#       sample.add_treatment(description = "laser cleaning", params = {"watt":100, "time (sec): 3}, xyorigin = (10,10) xyend = (50,50))
-
-    # Prit masks
+    
