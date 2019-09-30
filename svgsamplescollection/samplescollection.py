@@ -352,7 +352,11 @@ class Samplescollection:
       stroke-opacity="0.8"
       fill-opacity="0.3" >
       <title>material: %s
-    process: %s</title>
+    process: %s
+    thickness: %s
+    status: %s
+    applied_date: %s 
+    removed_date: %s</title>
       </rect>
       """ %(
                                   coord[0] + element['xi'],
@@ -361,7 +365,12 @@ class Samplescollection:
                                   element['xf']-element['xi'],
                                   element['yf']-element['yi'],
                                   element['material'],
-                                  element['process'])+"\n")
+                                  element['process'],
+                                  element['thickness'],
+                                  element['status'],
+                                  element['applied_date'],
+                                  element['removed_date']
+                                  )+"\n")
                         if element['kind'] == 'treatment':
                            f.write( r"""   <rect
       x="%s"
@@ -376,7 +385,10 @@ class Samplescollection:
       fill-opacity="0.2" >
       <title>process: %s
     parameters: %s
-    duration: %s</title>
+    status: %s
+    applied_date: %s
+    layer: %s
+    </title>
       </rect>      """ %(coord[0] + element['xi'],
                                   coord[1] + element['yi'],
                                   ids,
@@ -384,7 +396,9 @@ class Samplescollection:
                                   element['yf']-element['yi'],
                                   element['process'],
                                   element['parameters'],
-                                  element['duration']
+                                  element['status'],
+                                  element['applied_date'],
+                                  element['layer'],
                                   )+"\n")
 
                 f.write(r"</g>")
@@ -535,6 +549,11 @@ if __name__ == '__main__':
         sample.add_layer("vermilion egg tempera", "brush", width_percent=0.9)
     for sample in mycollection.samples[1:5]:
         sample.add_layer("varnish", "brush", width_percent=0.7)
+    for sample in mycollection.samples[::2]:
+        sample.add_treatment("uv curing", 
+                             parameters = {"duration": "5 h",
+                                           "wavelenght":"290"},
+                             height_percent=0.5)
     for sample in mycollection.samples:
         sample.add_treatment("cleaning", "acetone",width_percent=0.5)
     mycollection.insert_alignment_MTF_standard()
