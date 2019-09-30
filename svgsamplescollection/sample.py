@@ -23,6 +23,7 @@ class Sample:
                   thickness='?',
                   width_percent = 1,
                   height_percent = 1,
+                  step='?',
                   xi = 0,
                   yi = 0,
                   xf = None,
@@ -41,11 +42,15 @@ class Sample:
             raise ValueError("Layer exceeds the sample dimension")
 
         info = {
+         'id':self._number_of_elements, # consecutive ID
          'kind':'layer',
          'material':material,
          'process':process,
          'thickness':thickness,
          'status':'?',
+         'step':step, # linked step
+         'applied_date':'?',
+         'removed_date':'?',
          'xi':xi,
          'yi':yi,
          'xf':xf,
@@ -61,7 +66,6 @@ class Sample:
                   process,
                   parameters,
                   layer=None,
-                  duration='?',
                   width_percent = 1,
                   height_percent = 1,
                   xi = 0,
@@ -86,11 +90,12 @@ class Sample:
 
 
         info = {
+         'id':self._number_of_elements, # consecutive ID
          'kind':'treatment',
          'process':process,
-         'duration':duration,
          'parameters':parameters,
          'status':'?',
+         'applied_date':'?',
          'layer':layer,
          'xi':xi,
          'yi':yi,

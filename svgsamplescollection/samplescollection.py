@@ -84,7 +84,7 @@ class Samplescollection:
         self.minv_spacing_mm = 10
         self.title_font_size = 10
         self.label_font_size = 10
-        self.set_dataset_dimension = self.sizes(self,'dataset')
+        self.set_samplesholder_dimension = self.sizes(self,'dataset')
         self.set_sample_dimension = self.sizes(self,'sample')
         self._alignment_MTF_standards = []
         self._samples_coordinates = []
@@ -410,6 +410,7 @@ class Samplescollection:
 
 
     def save_masks_svg(self,border_as_cutline=True):
+        # TODO: it's actually better to save mask of a single step
         samx = max([sample._number_of_elements for sample in self.samples])
         # This saves only the sample holder
         self.save_svg(border_as_cutline=True, save_samples=False,name ='sampleholder')
@@ -525,7 +526,7 @@ class Samplescollection:
 if __name__ == '__main__':
     mycollection = Samplescollection()
     mycollection.name = 'Test samples collection'
-    mycollection.set_dataset_dimension.A4()
+    mycollection.set_samplesholder_dimension.A4()
     mycollection.set_sample_dimension.Microscope_slide()
     mycollection.set_number_of_samples(15)
     mycollection.create_sample_holder()
