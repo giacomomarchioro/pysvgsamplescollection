@@ -270,7 +270,20 @@ class Samplescollection:
                    thickness=thickness)
         self.samples.append(s)
         return s
-
+    
+    def add_layers(self,ids=None,):
+        if ids is None:
+            ids = range(self.number_of_samples)
+        for i in ids:
+            self.samples[i].add_layer()
+        
+    
+    def add_treatments(self,):
+        pass
+    
+    def add_step(self,):
+        pass
+    
     def set_number_of_samples(self, number):
         self.number_of_samples = number
 
@@ -552,7 +565,7 @@ if __name__ == '__main__':
     for sample in mycollection.samples[::2]:
         sample.add_treatment("uv curing", 
                              parameters = {"duration": "5 h",
-                                           "wavelenght":"290"},
+                                           "wavelength_nm":"290"},
                              height_percent=0.5)
     for sample in mycollection.samples:
         sample.add_treatment("cleaning", "acetone",width_percent=0.5)
