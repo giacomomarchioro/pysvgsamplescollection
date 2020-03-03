@@ -8,7 +8,7 @@ setuptools.setup(
     version="0.0.1",
     author="Giacomo Marchioro",
     author_email="giacomo.marchioro@outlook.com",
-    description="This package allows creating samples collections drawing.",
+    description="This package allows creating samples collections drawing an SVG file that can be visualized and queried.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/giacomomarchioro/pysvgsamplescollection",
