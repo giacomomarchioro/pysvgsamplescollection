@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 import warnings
 
 
-class readcollection():
+class ReadCollection():
     
     def __init__(self,path):
         self.path = path

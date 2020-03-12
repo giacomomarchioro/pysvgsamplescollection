@@ -1,0 +1,364 @@
+<svg version="1.1"
+   baseProfile="full" width="297mm"
+   height="210mm"
+   viewBox="0 0 297 210"
+   xmlns="http://www.w3.org/2000/svg">
+<text
+   x="20"
+   y="10"
+   id="collection_name"
+   font-family="Verdana"
+   font-size="10"
+   fill="blue">
+   Test samples collection  </text>
+<rect
+   x="0"
+   y="0"
+   id="collection_border"
+   width="297"
+   height="210"
+   stroke="red"
+   stroke-width="1"
+   fill-opacity="0"  />
+<g id="samples_position">
+   <rect
+      x="20"
+      y="20"
+      id="0"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="20"
+      y="18"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 0  </text>
+   <rect
+      x="100"
+      y="20"
+      id="1"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="100"
+      y="18"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 1  </text>
+   <rect
+      x="180"
+      y="20"
+      id="2"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="180"
+      y="18"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 2  </text>
+   <rect
+      x="20"
+      y="55"
+      id="3"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="20"
+      y="53"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 3  </text>
+   <rect
+      x="100"
+      y="55"
+      id="4"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="100"
+      y="53"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 4  </text>
+   <rect
+      x="180"
+      y="55"
+      id="5"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="180"
+      y="53"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 5  </text>
+   <rect
+      x="20"
+      y="90"
+      id="6"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="20"
+      y="88"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 6  </text>
+   <rect
+      x="100"
+      y="90"
+      id="7"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="100"
+      y="88"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 7  </text>
+   <rect
+      x="180"
+      y="90"
+      id="8"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="180"
+      y="88"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 8  </text>
+   <rect
+      x="20"
+      y="125"
+      id="9"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="20"
+      y="123"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 9  </text>
+   <rect
+      x="100"
+      y="125"
+      id="10"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="100"
+      y="123"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 10  </text>
+   <rect
+      x="180"
+      y="125"
+      id="11"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="180"
+      y="123"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 11  </text>
+   <rect
+      x="20"
+      y="160"
+      id="12"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="20"
+      y="158"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 12  </text>
+   <rect
+      x="100"
+      y="160"
+      id="13"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="100"
+      y="158"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 13  </text>
+   <rect
+      x="180"
+      y="160"
+      id="14"
+      width="70"
+      height="25"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> 
+   <text
+      x="180"
+      y="158"
+      font-family="Verdana"
+      font-size="5"
+      fill="blue" >
+      ID: 14  </text>
+</g>
+<g id = "MTF" stroke="none" fill="blue">
+<path d=" 
+M 10.4357787137 5.01902650954
+A 5.0 5.0 0 0 0 5.01902650954 9.56422128626
+L 10.0 10.0
+Z"/>
+<path d=" 
+M 9.56422128626 14.9809734905
+A 5.0 5.0 0 0 0 14.9809734905 10.4357787137
+L 10.0 10.0
+Z"/>
+<path d=" 
+M 287.435778714 5.01902650954
+A 5.0 5.0 0 0 0 282.01902651 9.56422128626
+L 287.0 10.0
+Z"/>
+<path d=" 
+M 286.564221286 14.9809734905
+A 5.0 5.0 0 0 0 291.98097349 10.4357787137
+L 287.0 10.0
+Z"/>
+<path d=" 
+M 10.4357787137 195.01902651
+A 5.0 5.0 0 0 0 5.01902650954 199.564221286
+L 10.0 200.0
+Z"/>
+<path d=" 
+M 9.56422128626 204.98097349
+A 5.0 5.0 0 0 0 14.9809734905 200.435778714
+L 10.0 200.0
+Z"/>
+<path d=" 
+M 287.435778714 195.01902651
+A 5.0 5.0 0 0 0 282.01902651 199.564221286
+L 287.0 200.0
+Z"/>
+<path d=" 
+M 286.564221286 204.98097349
+A 5.0 5.0 0 0 0 291.98097349 200.435778714
+L 287.0 200.0
+Z"/>
+</g><g id = "scalebar" stroke="none" fill="blue">
+<rect
+           x="128.5"
+           y="200.0"
+           width="10"
+           height="3.33333333333"
+           stroke="blue"
+           stroke-width="0"
+           fill="blue"/>
+
+<text x="128.5" y="196.0" fill="blue" font-size="3.33333333333" text-anchor="middle" >0 </text>
+<rect
+           x="138.5"
+           y="196.666666667"
+           width="10"
+           height="3.33333333333"
+           stroke="blue"
+           stroke-width="0"
+           fill="blue"/>
+
+<text x="138.5" y="196.0" fill="blue" font-size="3.33333333333" text-anchor="middle" >10 </text>
+<rect
+           x="148.5"
+           y="200.0"
+           width="10"
+           height="3.33333333333"
+           stroke="blue"
+           stroke-width="0"
+           fill="blue"/>
+
+<text x="148.5" y="196.0" fill="blue" font-size="3.33333333333" text-anchor="middle" >20 </text>
+<rect
+           x="158.5"
+           y="196.666666667"
+           width="10"
+           height="3.33333333333"
+           stroke="blue"
+           stroke-width="0"
+           fill="blue"/>
+
+<text x="158.5" y="196.0" fill="blue" font-size="3.33333333333" text-anchor="middle" >30 </text>
+<text x="168.5" y="196.0" fill="blue" font-size="3.33333333333" text-anchor="middle" >40 </text>
+<text x="169.5" y="200.0" fill="blue" font-size="3.33333333333">
+        mm </text>
+</g><g id = "standards" stroke="none">
+<rect
+            x="283.666666667"
+            y="105.0"
+            id="0"
+            width="6.66666666667"
+            height="21"
+            stroke="red"
+            stroke-width="0.5"
+            fill-opacity="0">
+            <title>name: standard
+            description: None
+            </title>
+            </rect>
+</g></svg>

@@ -7,4 +7,5 @@ Created on Wed May  2 16:18:20 2018
 """
 from __future__ import division, absolute_import, print_function
 from .samplescollection import Samplescollection
-__all__ = [Samplescollection]
+from .readcollection import ReadCollection
+__all__ = [Samplescollection,ReadCollection]

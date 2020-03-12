@@ -8,3 +8,6 @@ pysvgdataset/\.DS_Store
 \.DS_Store
 
 svgsamplescolletion\.egg-info/
+
+*.dxf
+

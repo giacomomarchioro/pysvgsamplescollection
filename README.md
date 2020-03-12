@@ -12,8 +12,8 @@ The `.svg`can be read with any browser. The mouse over tooltip can show to anybo
 
 ### Create an .svg samples collection
 
-python
-```
+
+```python
 mycollection = Samplescollection()
 # We can set the name of the collection
 mycollection.name = 'Test samples collection'
@@ -49,6 +49,8 @@ mycollection.save_svg()
 # and the masks
 mycollection.save_masks_svg()
 ```
+The result is the following:
+![Collection]("../examples/Test samples collection")
 ### Read and query the .svg file
 
 ### Installation
