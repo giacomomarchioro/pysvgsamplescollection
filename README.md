@@ -1,18 +1,25 @@
 # Python svg samples collection designer
 
-This Python script allows you to create a modified `.svg` rappresenting a flat samples collection. A flat samples collection is a group of flat samples (e.g. some pieces of metals with different varnishes, a series of coloured tile ...). The samples are contained in a samples holder that can be used as reference system.
+This Python script allows you to create a modified `.svg` rappresenting a flat samples collection. A flat samples collection is a group of flat samples (e.g. some pieces of metals with different varnishes, a series of coloured tile ...). The samples are contained in a samples holder that can be used as reference system. You can store the information about the coatings and treatments applied to each samples and improve the replicability of your samples collections.
+
+<img src="examples/Test samples collection.svg"  width="600">
 
 ### Create, automate measurments and visualize
 The `.svg`use the standard color coding of laser cutters so you can cut the samples and the samples holder with your laser cutter. If you don't have one you can find a [FabLab next to you](https://www.google.com/maps/search/fablab/) or use an [online service](https://www.google.com/search?q=online+laser+cutting).
 
-Once you have your physical samples collection,if you have a positioning system (microscope stages, linear stages etc. etc) you can use the coordinates inside the `.svg` file for positioning your instrument on the sample (or the part of the sample) you are interested in.
+Once you have your physical samples collection,if you have a positioning system (microscope stages, linear stages etc. etc) and the ability to communicate with them using macros or scripts you can query the `.svg` file for getting the coordinates and positioning your instrument on the sample (or the part of the sample) you are interested in.
 
 The `.svg`can be read with any browser. The mouse over tooltip can show to anybody what's the last layer of your sample.
 
+### Installation
+You can install it using pip from terminal or from the ipython console:
+
+    pip install git+https://github.com/giacomomarchioro/pysvgsamplescollection
+
+
 
 ### Create an .svg samples collection
-
-
+Writing a script can give the opportuinity to others to replicate your samples collection easily.
 ```python
 mycollection = Samplescollection()
 # We can set the name of the collection
@@ -49,17 +56,9 @@ mycollection.save_svg()
 # and the masks
 mycollection.save_masks_svg()
 ```
-The result is the following:
-
-![Alt text](examples/Test samples collection.svgg)
-<img src="examples/Test samples collection.svg">
+The result is shwon at the top of the page. The mask can be used for facilitating the creation of the samples. For instance you can place a mask for covering the region of your samples that you don't have to treat or coat. 
 
 ### Read and query the .svg file
-
-### Installation
-You can install it using pip from terminal or from the ipython console:
-
-    pip install git+https://github.com/giacomomarchioro/pysvgsamplescollection
 
 
 ### Requirments
