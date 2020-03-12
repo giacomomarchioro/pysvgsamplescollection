@@ -51,7 +51,8 @@ mycollection.save_masks_svg()
 ```
 The result is the following:
 
-![Collection]("examples/Test samples collection.svg")
+![Alt text](examples/Test samples collection.svgg)
+<img src="examples/Test samples collection.svg">
 
 ### Read and query the .svg file
 
