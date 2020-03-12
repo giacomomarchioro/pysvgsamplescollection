@@ -1,6 +1,6 @@
 # Python svg samples collection designer
 
-This Python script allows you to create a modified `.svg` rappresenting a flat samples collection. A flat samples collection is a group of flat samples (e.g. some pieces of metals with different varnishes, a series of coloured tile ...). The samples are contained in a samples holder that can be used as reference system. You can store the information about the coatings and treatments applied to each samples and improve the replicability of your samples collections.
+This Python script allows you to create a modified `.svg` rappresenting a flat samples collection. A flat samples collection is a group of flat samples (e.g. some pieces of metals with different varnishes, a series of coloured tiles ...). The samples are contained in a samples holder that can be used as reference system. You can store the information about the coatings and treatments applied to each samples and improve the replicability of your samples collections.
 
 <img src="examples/Test samples collection.svg"  width="600">
 
@@ -56,7 +56,7 @@ mycollection.save_svg()
 # and the masks
 mycollection.save_masks_svg()
 ```
-The result is shwon at the top of the page. The mask can be used for facilitating the creation of the samples. For instance you can place a mask for covering the region of your samples that you don't have to treat or coat. 
+The result is shwon at the top of the page, right cliking on it you can use `open image in a new tab` to explore the sample collection with mouse over tooltips. The mask can be used for facilitating the creation of the samples. For instance you can place a mask for covering the region of your samples that you don't have to treat or coat. 
 
 ### Read and query the .svg file
 
