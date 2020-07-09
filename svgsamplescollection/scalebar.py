@@ -51,3 +51,44 @@ def scalebar(xi,
             yi + half_height,
             font_size))
     return lines
+
+
+def scalebar(xi,
+             yi,
+             height,
+             lenght=None,
+             element_lenght=None,
+             element_number=None,
+             font_size=None):
+    """
+    Draw a scalebar. The rectangle and the text
+    """
+    zero1 = cycle([1, 0])
+    half_height = height/2.
+    if font_size is None:
+        font_size = half_height
+    text = []
+    square_elements = []
+    if element_number is None:
+        element_number = int(lenght/element_lenght)
+    xn = xi
+    for i in range(element_number):
+        square_elements.append((xn,
+                               yi + half_height*next(zero1),
+                               element_lenght,
+                               half_height))
+        text.append((xn,
+                    yi - half_height/5.,
+                    font_size,
+                    element_lenght*i))
+        xn += element_lenght
+    square_elements.append((xn,
+                            yi - half_height/5.,
+                            font_size,
+                            element_lenght*(i+1)))
+    text.append((
+            element_lenght*element_number + xi + element_lenght/10.,
+            yi + half_height,
+            font_size,
+            "mm"))
+    return square_elements,text

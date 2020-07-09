@@ -1,7 +1,7 @@
-from svgsamplescollection import Samplescollection
-mySampCol = Samplescollection()
+from svgsamplescollection import SamplesCollection
+mySampCol = SamplesCollection()
 mySampCol.name = 'Test silver'
-mySampCol.set_dataset_dimension.A4()
+mySampCol.set_samplesholder_dimension.A4()
 mySampCol.set_sample_dimension.Microscope_slide()
 mySampCol.set_number_of_samples(15)
 mySampCol.margin_top_mm = 5

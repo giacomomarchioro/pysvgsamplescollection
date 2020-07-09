@@ -5,7 +5,7 @@ from .circle_sector import draw_mtf_aligment
 from .scalebar import scalebar
 from .sample import Sample
 import math
-import xml.etree.ElementTree as ET
+
 
 class SamplesCollection:
     """
@@ -463,166 +463,153 @@ class SamplesCollection:
 #             #Close the file
 #             f.write(r"</svg>")
         doc.saveas('test.dxf')
-  
+
+
     def save_svg(self, border_as_cutline=True, save_samples=True, name=None):
         if self._samples_ID == []:
             self._samples_ID = range(self.number_of_samples)
         if name is None:
             name = self.name
-        x, y, _ = self.dataset_dimension
-        w, h, _ = self.sample_dimension
-        p = ET.Element('svg')
-        p.set("version", "1.1")
-        p.set("baseProfile", "full")
-        p.set("width","%smm"%x)
-        p.set("height","%smm"%y)
-        p.set("viewBox","0 0 %s %s"%(x,y))
-        p.set("xmlns","http://www.w3.org/2000/svg")
-        ytit = self.margin_top_mm - self._title_offset
-        xtit = self.margin_left_mm
-        title_e = ET.SubElement(p, 'text')
-        title_e.set("x",str(xtit))
-        title_e.set("y",str(ytit))
-        title_e.set("font-family","Verdana")
-        title_e.set("font-size",str(self.title_font_size_mm))
-        title_e.text = self.name
-        if border_as_cutline:
-            border_e = ET.SubElement(p,'rect')
-            border_e.set("x","0")
-            border_e.set("y","0")
-            border_e.set("id","collection_border")
-            border_e.set("width",str(x))
-            border_e.set("height",str(y))
-            border_e.set("stroke","red")
-            border_e.set("stroke-width","1")
-            border_e.set("fill-opacity","0")
-        sem_pos = ET.SubElement(p, 'g')
-        sem_pos.set("id","samples_position")
-        for index, i in enumerate(self._samples_coordinates):
-            ids = self._samples_ID[index]
-            se = ET.SubElement(sem_pos, 'g')
-            se.set("x",str(i[0]))
-            se.set("y",str(i[1]))
-            se.set("id",str(ids))
-            se.set("width",str(w))
-            se.set("height",str(h))
-            se.set("stroke","red")
-            se.set("stroke-width","0.5")
-            se.set("fill-opacity","0")
-            ty = i[1] - self.text_y
-            tite = ET.SubElement(sem_pos, 'text')
-            tite.set("x",str(i[0]))
-            tite.set("y",str(ty))
-            tite.set("font-family","Verdana")
-            tite.set("font-size",str(self.label_font_size_mm))
-            tite.text = str(ids)
-        if self.samples != [] and save_samples:
-            sems= ET.SubElement(p, 'g')
-            sems.set("id","samples")
-            for index, coord in enumerate(self._samples_coordinates):
+        with open('%s.svg' % name, 'w') as f:
+            x, y, _ = self.dataset_dimension
+            w, h, _ = self.sample_dimension
+            f.write(r"""<svg version="1.1"
+   baseProfile="full" width="%smm"
+   height="%smm"
+   viewBox="0 0 %s %s"
+   xmlns="http://www.w3.org/2000/svg">""" %(x,y,x,y) +"\n")
+            ytit = self.margin_top_mm - self._title_offset
+            xtit = self.margin_left_mm
+            # Collection name
+            f.write( r"""<text
+   x="%s"
+   y="%s"
+   id="collection_name"
+   font-family="Verdana"
+   font-size="%s"
+   fill="blue">
+   %s  </text>"""%(xtit,ytit,self.title_font_size_mm,self.name)+"\n")
+
+            if border_as_cutline:
+                f.write( r"""<rect
+   x="0"
+   y="0"
+   id="collection_border"
+   width="%s"
+   height="%s"
+   stroke="red"
+   stroke-width="1"
+   fill-opacity="0"  />""" %(x,y)+"\n" )
+            f.write( r"""<g id="samples_position">"""+"\n" )
+            for index, i in enumerate(self._samples_coordinates):
                 ids = self._samples_ID[index]
-                sample = self.samples[index]
-                for element in sample.elements.values():
-                    if element['kind'] == 'layer':
-                        s = ET.SubElement(sems, 'rect')
-                        s.set("x",str(coord[0] + element['xi']))
-                        s.set("y",str(coord[1] + element['yi']))
-                        s.set("id",str(ids))
-                        s.set("width",str(element['xf']-element['xi']))
-                        s.set("height",str(element['yf']-element['yi']))
-                        s.set("stroke","yellow")
-                        s.set("stroke-width","0.4")
-                        s.set("stroke-opacity","0.8")
-                        s.set("fill-opacity","0.3")
-                        t = ET.SubElement(s, 'title')
-                        # TODO: better to use a json dump
-                        t.text = """material: %s
-                                    process: %s
-                                    thickness: %s
-                                    status: %s
-                                    applied_date: %s 
-                                    removed_date: %s"""%(
+                f.write( r"""   <rect
+      x="%s"
+      y="%s"
+      id="%s"
+      width="%s"
+      height="%s"
+      stroke="red"
+      stroke-width="0.5"
+      fill-opacity="0" /> """ %(i[0],i[1],ids,w,h)+"\n")
+                ty = i[1] - self.text_y
+
+                f.write( r"""   <text
+      x="%s"
+      y="%s"
+      font-family="Verdana"
+      font-size="%s"
+      fill="blue" >
+      ID: %s  </text>""" %(i[0],ty,self.label_font_size_mm,ids)+"\n")
+            f.write( r"</g>"+"\n" )
+
+            if self.samples != [] and save_samples:
+                f.write( r"""<g id="samples">"""+"\n" )
+                for index, coord in enumerate(self._samples_coordinates):
+                    ids = self._samples_ID[index]
+                    sample = self.samples[index]
+                    for element in sample.elements.values():
+                        if element['kind'] == 'layer':
+                            f.write(r"""   <rect
+
+      x="%s"
+      y="%s"
+      id="%s"
+      width="%s"
+      height="%s"
+      stroke="yellow"
+      stroke-width="0.4"
+      stroke-opacity="0.8"
+      fill-opacity="0.3" >
+      <title>material: %s
+    process: %s
+    thickness: %s
+    status: %s
+    applied_date: %s 
+    removed_date: %s</title>
+      </rect>
+      """ %(
+                                  coord[0] + element['xi'],
+                                  coord[1] + element['yi'],
+                                  ids,
+                                  element['xf']-element['xi'],
+                                  element['yf']-element['yi'],
                                   element['material'],
                                   element['process'],
                                   element['thickness'],
                                   element['status'],
                                   element['applied_date'],
                                   element['removed_date']
-                                  )
-                    if element['kind'] == 'treatment':
-                        s = ET.SubElement(sems, 'rect')
-                        s.set("x",str(coord[0] + element['xi']))
-                        s.set("y",str(coord[1] + element['yi']))
-                        s.set("id",str(ids))
-                        s.set("width",str(element['xf']-element['xi']))
-                        s.set("height",str(element['yf']-element['yi']))
-                        s.set("stroke","magenta")
-                        s.set("stroke-width","0.3")
-                        s.set("stroke-opacity","0.8")
-                        s.set("fill-opacity","0.2")
-                        t = ET.SubElement(s, 'title')
-                        t.text = """process: %s
-                                    parameters: %s
-                                    status: %s
-                                    applied_date: %s 
-                                    layer: %s"""%(
+                                  )+"\n")
+                        if element['kind'] == 'treatment':
+                           f.write( r"""   <rect
+      x="%s"
+      y="%s"
+      id="%s"
+      width="%s"
+      height="%s"
+      stroke="magenta"
+      stroke-opacity="0.8"
+      stroke-width="0.3"
+      fill="magenta"
+      fill-opacity="0.2" >
+      <title>process: %s
+    parameters: %s
+    status: %s
+    applied_date: %s
+    layer: %s
+    </title>
+      </rect>      """ %(coord[0] + element['xi'],
+                                  coord[1] + element['yi'],
+                                  ids,
+                                  element['xf']-element['xi'],
+                                  element['yf']-element['yi'],
                                   element['process'],
                                   element['parameters'],
                                   element['status'],
                                   element['applied_date'],
-                                  element['layer'])
+                                  element['layer'],
+                                  )+"\n")
 
+                f.write(r"</g>")
+
+            if self._alignment_MTF_standards != []:
+                f.write(r"""<g id = "MTF" stroke="none" fill="blue">"""+"\n")
+                for i in self._alignment_MTF_standards:
+                    f.write(i+"\n")
+                f.write(r"</g>")
             if self._scalebar != []:
-                sbs = ET.SubElement(p,'g')
-                sbs.set("id","scalebar")
-                sbs.set("stroke","none")
-                sbs.set("fill","blue")
-                rects, texts = self._scalebar
-                for i in rects:
-                    r = ET.SubElement(sbs,'rect')
-                    r.set("x",str(i[0]))
-                    r.set("y",str(i[1]))
-                    r.set("width",str(i[2]))
-                    r.set("height",str(i[3]))
-                    r.set("stroke-width","0")
-                    r.set("fill","blue")
-                for t in texts:
-                    te = ET.SubElement(sbs,'text')
-                    te.set("x",str(t[0]))
-                    te.set("y",str(t[1]))
-                    te.set("font-family","Verdana")
-                    te.set("font-size",str(t[2]))
-                    te.text = str(t[3])
-
-            # if self._standards != []:
-            #     f.write(r"""<g id = "standards" stroke="none">"""+"\n")
-            #     for i in self._standards:
-            #         f.write(i+"\n")
-            #     f.write(r"</g>")
-            # #Close the file
-            # f.write(r"</svg>")
-        def indent(elem, level=0):
-            i = "\n" + level*"  "
-            j = "\n" + (level-1)*"  "
-            if len(elem):
-                if not elem.text or not elem.text.strip():
-                    elem.text = i + "  "
-                if not elem.tail or not elem.tail.strip():
-                    elem.tail = i
-                for subelem in elem:
-                    indent(subelem, level+1)
-                if not elem.tail or not elem.tail.strip():
-                    elem.tail = j
-            else:
-                if level and (not elem.tail or not elem.tail.strip()):
-                    elem.tail = j
-            return elem  
-
-        indent(p)
-        tree = ET.ElementTree(p)
-        if not name.endswith('.svg'):
-            name+='.svg'
-        tree.write(name)
+                f.write(r"""<g id = "scalebar" stroke="none" fill="blue">"""+"\n")
+                for i in self._scalebar:
+                    f.write(i+"\n")
+                f.write(r"</g>")
+            if self._standards != []:
+                f.write(r"""<g id = "standards" stroke="none">"""+"\n")
+                for i in self._standards:
+                    f.write(i+"\n")
+                f.write(r"</g>")
+            #Close the file
+            f.write(r"</svg>")
 
     def save_masks_svg(self,border_as_cutline=True):
         # TODO: it's actually better to save mask of a single step

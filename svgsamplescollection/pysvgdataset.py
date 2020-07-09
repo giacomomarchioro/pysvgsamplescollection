@@ -2,7 +2,7 @@
 Py
 '''
 from __future__ import print_function
-from circle_sector import draw_mtf_aligment 
+from .circle_sector import draw_mtf_aligment 
 
 class sizes:
     def __init__(self):
@@ -55,7 +55,7 @@ class Dataset:
             self.cols = samples_per_row
         else:
             print("Max number of samples: %s" %(samples_per_row*max_number_of_rows))
-            print("Too many samples! Try to decrese margins or spacing!")
+            print("Too many samples! Try to decrease margins or spacing!")
     
     def findcord(self):
         xlen = self.samples_dimensions[0]+self.minh_spacing_mm

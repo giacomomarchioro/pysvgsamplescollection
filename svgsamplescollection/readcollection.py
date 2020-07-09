@@ -2,8 +2,7 @@ from __future__ import print_function
 import xml.etree.ElementTree as ET
 import warnings
 
-
-class readcollection():
+class ReadCollection():
     
     def __init__(self,path):
         self.path = path
@@ -12,6 +11,7 @@ class readcollection():
         self.root = tree.getroot()
         for child in self.root:
             self.records[child.attrib['id']] = child
+        self.last_selection = None
 
     def _get_xiyixfyf(self,rectobj):
         '''
@@ -68,7 +68,7 @@ class readcollection():
                 if sample.get("stroke") == stroke:
                     idi = int(sample.get('id'))
                     if idi in ids or ids ==  []:
-                        t = sample[0].text
+                        t = sample[0].text # text with description
                         if WITH == [''] and WITHOUT == ['']:
                             xi,yi,xf,yf = self._get_xiyixfyf(sample)
                             samples_positions.append((xi,yi,xf,yf,idi))
@@ -93,6 +93,7 @@ class readcollection():
                                               
         if len(samples_positions) < len(ids):
             warnings.warn("Could not find some layers with IDs you required!")
+        self.last_selection = samples_positions
         return samples_positions
     
     def get_treatments_position(self,ids=[],WITH = '',WITHOUT=''):
@@ -104,6 +105,7 @@ class readcollection():
                                                      )       
         if len(samples_positions) < len(ids):
             warnings.warn("Could not find some treatments with IDs you required!")
+        self.last_selection = samples_positions
         return samples_positions    
         
     
@@ -167,7 +169,7 @@ class readcollection():
             xi,xf = min(x),max(x)
             yi,yf = min(y),max(y)
             coords.append((xi,yi,xf,yf,idx))
-            
+        self.last_selection = coords
         return coords
     # Samples
         
@@ -228,3 +230,15 @@ class readcollection():
         #print(res)
         return res    
 
+    def show_last_selction(self,):
+       if self.last_selection is not None:           
+           from shapely.geometry import MultiPolygon
+           from shapely.affinity import scale
+           poligs = [ self._create_shapely_polygon(i) for i in self.get_samples_position()]
+           poligintr = [self._create_shapely_polygon(i) for i in self.last_selection]
+           als = poligs + poligintr
+           res = scale( MultiPolygon(als), yfact = -1, origin = (1, 0))
+           #print(res)
+           return res    
+       else: 
+           print('No selection in memory!')
