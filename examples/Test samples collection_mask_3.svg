@@ -1,0 +1,22 @@
+<svg version="1.1"
+       baseProfile="full" width="297mm"
+       height="210mm"
+       viewBox="0 0 297 210"
+       xmlns="http://www.w3.org/2000/svg">
+<text
+       x="20"
+       y="10"
+       font-family="Verdana"
+       font-size="10"
+       fill="blue">
+       MASK 3: Test samples collection  </text>
+<rect
+       x="0"
+       y="0"
+       width="297"
+       height="210"
+       stroke="red"
+       stroke-width="1"
+       fill-opacity="0"  />
+<g id="samples">
+</g></svg>

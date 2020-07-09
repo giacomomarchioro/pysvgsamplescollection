@@ -2,7 +2,8 @@ from __future__ import print_function
 import xml.etree.ElementTree as ET
 import warnings
 
-class ReadCollection():
+
+class readcollection():
     
     def __init__(self,path):
         self.path = path

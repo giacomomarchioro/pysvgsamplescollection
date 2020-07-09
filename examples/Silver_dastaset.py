@@ -16,8 +16,10 @@ for sample in mySampCol.samples[1:5]:
     sample.add_layer("varnish", "nitorcellulose lacquer", width_percent=0.7)
 for sample in mySampCol.samples:
     sample.add_treatment("cleaning", "acetone",width_percent=0.5)
-mySampCol.insert_alignment_MTF_standard()
-mySampCol.insert_scalebar()
-mySampCol.insert_standard()
-mySampCol.save_svg()
-mySampCol.save_masks_svg()
+mycollection.insert_alignment_MTF_standard()
+mycollection.insert_scalebar()
+mycollection.insert_standard()
+# we save the svg file with all the information
+mycollection.save_svg()
+# and the masks
+mycollection.save_masks_svg()

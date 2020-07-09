@@ -1,0 +1,102 @@
+<svg version="1.1"
+       baseProfile="full" width="297mm"
+       height="210mm"
+       viewBox="0 0 297 210"
+       xmlns="http://www.w3.org/2000/svg">
+<text
+       x="20"
+       y="10"
+       font-family="Verdana"
+       font-size="10"
+       fill="blue">
+       MASK 2: Test samples collection  </text>
+<rect
+       x="0"
+       y="0"
+       width="297"
+       height="210"
+       stroke="red"
+       stroke-width="1"
+       fill-opacity="0"  />
+<g id="samples">
+   <rect
+                                          x="100"
+                                          y="20"
+                                          id="1"
+                                          width="49.0"
+                                          height="25"
+                                          stroke="red"
+                                          stroke-width="0.4"
+                                          fill-opacity="0.3" >
+                                          <title>material: varnish process: brush</title>
+                                          </rect>
+                                          
+   <text
+                                      x="100"
+                                      y="20"
+                                      font-family="Verdana"
+                                      font-size="3"
+                                      fill="blue" >
+                                      material: varnish; process: brush
+                                      </text>
+   <rect
+                                          x="180"
+                                          y="20"
+                                          id="2"
+                                          width="49.0"
+                                          height="25"
+                                          stroke="red"
+                                          stroke-width="0.4"
+                                          fill-opacity="0.3" >
+                                          <title>material: varnish process: brush</title>
+                                          </rect>
+                                          
+   <text
+                                      x="180"
+                                      y="20"
+                                      font-family="Verdana"
+                                      font-size="3"
+                                      fill="blue" >
+                                      material: varnish; process: brush
+                                      </text>
+   <rect
+                                          x="20"
+                                          y="55"
+                                          id="3"
+                                          width="49.0"
+                                          height="25"
+                                          stroke="red"
+                                          stroke-width="0.4"
+                                          fill-opacity="0.3" >
+                                          <title>material: varnish process: brush</title>
+                                          </rect>
+                                          
+   <text
+                                      x="20"
+                                      y="55"
+                                      font-family="Verdana"
+                                      font-size="3"
+                                      fill="blue" >
+                                      material: varnish; process: brush
+                                      </text>
+   <rect
+                                          x="100"
+                                          y="55"
+                                          id="4"
+                                          width="49.0"
+                                          height="25"
+                                          stroke="red"
+                                          stroke-width="0.4"
+                                          fill-opacity="0.3" >
+                                          <title>material: varnish process: brush</title>
+                                          </rect>
+                                          
+   <text
+                                      x="100"
+                                      y="55"
+                                      font-family="Verdana"
+                                      font-size="3"
+                                      fill="blue" >
+                                      material: varnish; process: brush
+                                      </text>
+</g></svg>
