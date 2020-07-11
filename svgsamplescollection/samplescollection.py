@@ -87,12 +87,19 @@ class SamplesCollection:
         self.label_font_size_mm = None
         self.set_samplesholder_dimension = self.sizes(self,'dataset')
         self.set_sample_dimension = self.sizes(self,'sample')
+        self.publisher = None
+        self.about = None
+        self.description = None
+        self.creators = []
         self._alignment_MTF_standards = []
         self._samples_coordinates = []
         self._samples_ID = []
         self._scalebar = []
         self._standards = []
         self._title_offset = None
+
+    def add_creator(self,name_surname):
+        self.creators.append(name_surname)
 
     def create_sample_holder(self):
         '''
@@ -478,6 +485,26 @@ class SamplesCollection:
         p.set("height","%smm"%y)
         p.set("viewBox","0 0 %s %s"%(x,y))
         p.set("xmlns","http://www.w3.org/2000/svg")
+        # https://www.w3.org/TR/SVG11/metadata.html
+        metadata = ET.SubElement(p,'metadata')
+        rdf = ET.SubElement(metadata,'rdf:RDF')
+        rdf.set('xmlns:rdf',"http://www.w3.org/1999/02/22-rdf-syntax-ns#")
+        rdf.set('xmlns:rdfs',"http://www.w3.org/2000/01/rdf-schema#")
+        rdf.set('xmlns:dc',"http://purl.org/dc/elements/1.1/")
+        desc = ET.SubElement(rdf,'rdf:Description')
+        desc.set('about',self.about)
+        desc.set('dc:title',self.name)
+        desc.set('dc:description',self.description)
+        desc.set('dc:publisher',self.publisher)
+        desc.set('dc:date',self.date)
+        desc.set('dc:format',"image/svg+xml")
+        desc.set('dc:language',"en")
+        desc.set('about',self.about)
+        creator = ET.SubElement(desc,'dc:creator')
+        bag = ET.SubElement(creator,'rdf:Bag')
+        for i in self.creators:
+            c = ET.SubElement(bag,'rdf:li')
+            c.text = i
         ytit = self.margin_top_mm - self._title_offset
         xtit = self.margin_left_mm
         title_e = ET.SubElement(p, 'text')
