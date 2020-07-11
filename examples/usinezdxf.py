@@ -5,8 +5,8 @@ mySampCol.name = 'Test silver'
 mySampCol.set_samplesholder_dimension.A4()
 mySampCol.set_sample_dimension.Microscope_slide()
 mySampCol.set_number_of_samples(15)
-mySampCol.margin_top_mm = 5
-mySampCol.margin_bottom_mm = 5
+mySampCol.margin_top_mm = 15
+mySampCol.margin_bottom_mm = 15
 mySampCol.minh_spacing_mm = 10
 mySampCol.minv_spacing_mm = 5
 mySampCol.create_sample_holder()
@@ -25,9 +25,8 @@ import ezdxf
 
 # 0,0 is bottom left while in svg is top left
 
-y = 220
-x = 300
 
+x,y,_ = mySampCol.dataset_dimension
 doc = ezdxf.new('R2010')  # create a new DXF R2010 drawing, official DXF version name: 'AC1024'
 # set units to millilmters
 doc.header['$INSUNITS'] = 4
@@ -65,24 +64,67 @@ for index, i in enumerate(mySampCol._samples_coordinates):
                  'layer':'Text',
                  'height': mySampCol.label_font_size_mm}
              ).set_pos((i[0], y + mySampCol.text_y - i[1]), align='LEFT')
-    #             f.write( r"""   <rect
-    #   x="%s"
-    #   y="%s"
-    #   id="%s"
-    #   width="%s"
-    #   height="%s"
-    #   stroke="red"
-    #   stroke-width="0.5"
-    #   fill-opacity="0" /> """ %(i[0],i[1],ids,w,h)+"\n")
-    #             ty = i[1] - self.text_y
 
-    #             f.write( r"""   <text
-    #   x="%s"
-    #   y="%s"
-    #   font-family="Verdana"
-    #   font-size="5"
-    #   fill="blue" >
-    #   ID: %s  </text>""" %(i[0],ty,ids)+"\n")
-    #         f.write( r"</g>"+"\n" )
+
+if mySampCol._alignment_MTF_standards != []:
+                doc.layers.new(name='MTF', dxfattribs={'color': 5})
+                for i in mySampCol._alignment_MTF_standards:
+                    #[utl, utr, btl, btr]
+                    a,b = i
+                    ac = ((a['xendpoint'] - a['xstartpoint'])**2 + (a['yendpoint'] - a['ystartpoint'])**2)**0.5
+                    sa = a['r'] - (a['r']**2 - (ac/2)**2)**0.5
+                    binge_a = sa/(ac/2)
+                    apoints = [(a['xcenter'],y - a['ycenter'],0),
+                              (a['xstartpoint'],y - a['ystartpoint'],binge_a),
+                              (a['xendpoint'], y - a['yendpoint'],0),
+                              (a['xcenter'],y - a['ycenter'],0),]
+                    lwpolylinea = msp.add_lwpolyline(apoints,format='xyb', 
+                    dxfattribs={'layer':'MTF'})
+                    bc = ((b['xendpoint'] - b['xstartpoint'])**2 + (b['yendpoint'] - b['ystartpoint'])**2)**0.5
+                    sb = b['r'] - (b['r']**2 - (bc/2)**2)**0.5
+                    binge_b = sb/(bc/2)
+                    bpoints = [(b['xcenter'],y - b['ycenter'],0),
+                              (b['xstartpoint'], y - b['ystartpoint'],binge_b),
+                              (b['xendpoint'],y - b['yendpoint'],0),
+                              (b['xcenter'],y - b['ycenter'],0),]
+                    lwpolylineb = msp.add_lwpolyline(bpoints,format='xyb',dxfattribs={'layer':'MTF'})
+
+                    hatch = msp.add_hatch(color=5)
+                    path = hatch.paths.add_polyline_path(
+                    # get path vertices from associated LWPOLYLINE entity
+                    lwpolylinea.get_points(format='xyb'),
+                    # get closed state also from associated LWPOLYLINE entity
+                    is_closed=lwpolylinea.closed,)
+                    path = hatch.paths.add_polyline_path(
+                    # get path vertices from associated LWPOLYLINE entity
+                    lwpolylineb.get_points(format='xyb'),
+                    # get closed state also from associated LWPOLYLINE entity
+                    is_closed=lwpolylineb.closed,)
+
+                    # We finally ad a circle
+                    msp.add_circle(center=(a['xcenter'],a['ycenter']),radius=a['r'],dxfattribs={'layer':'MTF'})
+                    # ta = " M %s %s A %s %s 0 %s 0 %s %s  L %s %s Z" %(
+                    # a['xstartpoint'],a['ystartpoint'],
+                    # a['r'],a['r'],
+                    # a['large_arc_flag'],
+                    # a['xendpoint'],a['yendpoint'],
+                    # a['xcenter'], a['ycenter'],)
+                    # path_a.set('d',ta)
+                    # path_b = ET.SubElement(amtf,'path')
+                    # tb = " M %s %s A %s %s 0 %s 0 %s %s  L %s %s Z" %(
+                    # b['xstartpoint'],b['ystartpoint'],
+                    # b['r'],b['r'],
+                    # b['large_arc_flag'],
+                    # b['xendpoint'],b['yendpoint'],
+                    # b['xcenter'], b['ycenter'],)
+                    # path_b.set('d',tb)
+                    # circle = ET.SubElement(amtf,'circle')
+                    # circle.set("cx",str(a['xcenter']))  
+                    # circle.set("cy",str(a['ycenter']))  
+                    # circle.set("r",str(a['r']))  
+                    # circle.set("stroke","blue")  
+                    # circle.set("stroke-width","0.5")
+                    # circle.set("fill","none")    
+
 
 doc.saveas('line.dxf')

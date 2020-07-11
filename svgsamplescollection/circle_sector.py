@@ -33,7 +33,33 @@ def svgarc(xcenter,ycenter,r,startangle,endangle):
                     %(xcenter,ycenter,r))
     
     return lines
-            
+
+def svgarc(xcenter,ycenter,r,startangle,endangle):
+    if startangle > endangle: 
+        raise ValueError("startangle must be smaller than endangle")
+    
+    lines = []
+    if endangle - startangle < 360:
+        large_arc_flag = 0
+        radiansconversion = math.pi/180.
+        xstartpoint = xcenter + r*math.cos(startangle*radiansconversion)
+        ystartpoint = ycenter - r*math.sin(startangle*radiansconversion)
+        xendpoint = xcenter + r*math.cos(endangle*radiansconversion)
+        yendpoint = ycenter - r*math.sin(endangle*radiansconversion)
+        #If we want to plot angles larger than 180 degrees we need this
+        if endangle - startangle > 180: large_arc_flag = 1
+        params = {'xstartpoint':xstartpoint,
+                  'ystartpoint':ystartpoint,
+                  'xendpoint':xendpoint,
+                  'yendpoint':yendpoint,
+                  'large_arc_flag':large_arc_flag,
+                  'xcenter':xcenter,
+                  'ycenter':ycenter,
+                  'r':r}
+    else:
+        raise ValueError("Difference between end angle and start angle should not exceed 360 degree.")
+    return params
+
 def draw_mtf_aligment(xcenter,ycenter,r):
     l = svgarc(xcenter=xcenter,
                      ycenter=ycenter,
@@ -42,7 +68,16 @@ def draw_mtf_aligment(xcenter,ycenter,r):
                       ycenter=ycenter,
                       r=r,startangle=265,endangle=355)
     return l +l2
-    
+
+def draw_mtf_aligment(xcenter,ycenter,r):
+    l = svgarc(xcenter=xcenter,
+                     ycenter=ycenter,
+                     r=r,startangle=85,endangle=175)
+    l2 = svgarc(xcenter=xcenter,
+                      ycenter=ycenter,
+                      r=r,startangle=265,endangle=355)
+    return (l,l2)
+
 if __name__ == '__main__':
     l = svgarc(xcenter=150,ycenter=190,r=50,startangle=85,endangle=175)
     l2 = svgarc(xcenter=150,ycenter=190,r=50,startangle=265,endangle=355)
