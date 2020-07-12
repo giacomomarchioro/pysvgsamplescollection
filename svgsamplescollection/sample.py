@@ -44,13 +44,14 @@ class Sample:
         info = {
          'id':self._number_of_elements, # consecutive ID
          'kind':'layer',
+         'info':{
          'material':material,
          'process':process,
          'thickness':thickness,
          'status':'?',
          'step':step, # linked step
          'applied_date':'?',
-         'removed_date':'?',
+         'removed_date':'?'},
          'xi':xi,
          'yi':yi,
          'xf':xf,
@@ -92,11 +93,12 @@ class Sample:
         info = {
          'id':self._number_of_elements, # consecutive ID
          'kind':'treatment',
+         'info':{
          'process':process,
          'parameters':parameters,
          'status':'?',
          'applied_date':'?',
-         'layer':layer,
+         'layer':layer},
          'xi':xi,
          'yi':yi,
          'xf':xf,

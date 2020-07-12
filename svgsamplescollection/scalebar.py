@@ -82,10 +82,10 @@ def scalebar(xi,
                     font_size,
                     element_lenght*i))
         xn += element_lenght
-    square_elements.append((xn,
-                            yi - half_height/5.,
-                            font_size,
-                            element_lenght*(i+1)))
+    text.append((xn,
+                yi - half_height/5.,
+                font_size,
+                element_lenght*(i+1)))
     text.append((
             element_lenght*element_number + xi + element_lenght/10.,
             yi + half_height,

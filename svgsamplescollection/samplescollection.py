@@ -6,6 +6,8 @@ from .scalebar import scalebar
 from .sample import Sample
 import math
 import xml.etree.ElementTree as ET
+from datetime import datetime
+import json
 
 class SamplesCollection:
     """
@@ -90,6 +92,7 @@ class SamplesCollection:
         self.publisher = None
         self.about = None
         self.description = None
+        self.date = str(datetime.now())
         self.creators = []
         self._alignment_MTF_standards = []
         self._samples_coordinates = []
@@ -112,7 +115,7 @@ class SamplesCollection:
         ver_margin = self.margin_top_mm + self.margin_bottom_mm
         usable_h = self.dataset_dimension[1] - ver_margin
         hspace_smpl_require = self.sample_dimension[0]+self.minh_spacing_mm
-        vspace_smpl_require = self.sample_dimension[1]+self.minh_spacing_mm
+        vspace_smpl_require = self.sample_dimension[1]+self.minv_spacing_mm
         # Actually we have to consider that the last sample can be place next to
         # the margin, so we add the spacing to the effective space
         effective_hspace = usable_w+self.minh_spacing_mm
@@ -129,7 +132,7 @@ class SamplesCollection:
         self._title_offset = self.margin_top_mm*0.2
         self.title_font_size_mm = self.margin_top_mm - self._title_offset*2
 
-        effective_vspace = usable_h - self.minv_spacing_mm - self.margin_top_mm - self.margin_bottom_mm
+        effective_vspace = usable_h + self.minv_spacing_mm - self.margin_top_mm - self.margin_bottom_mm
         max_number_of_rows = int(effective_vspace/vspace_smpl_require)
         print('maxnumber', max_number_of_rows)
         if samples_per_row*max_number_of_rows >= num_samples:
@@ -174,7 +177,7 @@ class SamplesCollection:
         btl = draw_mtf_aligment(xcenter=spacing,ycenter= y - spacing,r=r)
         # Bottom right
         btr = draw_mtf_aligment(xcenter= x - spacing, ycenter= y - spacing,r=r)
-        self._alignment_MTF_standards = utl + utr + btl + btr
+        self._alignment_MTF_standards = [utl, utr, btl, btr]
 
     def insert_scalebar(self):
         x, y, _ = self.dataset_dimension
@@ -207,56 +210,46 @@ class SamplesCollection:
                         width=None,
                         radius=None):
         """
-        Insert a standard on the right marign.
+        Insert a standard on the left marign.
         """
         x, y, _ = self.dataset_dimension
         if shape == 'circle':
             if yi is None:
                 yi = y/2.
             if xi is None:
-                xi = x - self.margin_right_mm/2.
+                xi =  self.margin_left_mm/2.
             if radius is None:
-                radius = self.margin_right_mm/3.
-            mst = """<circle cx="%s" cy="%s" r="%s">
-            <title>name: %s
-            description: %s
-            </title>
-            </circle>""" % (xi,
-                            yi,
-                            radius,
-                            name,
-                            description)
+                radius = self.margin_left_mm/3.
+            mst = {"shape":shape,
+                   "xi":xi,
+                   "yi":yi,
+                   "radius":radius,
+                   "id":len(self._standards),
+                   "title":{"name":name,
+                   "description":description},
+                   "mode":mode}
             self._standards.append(mst)
 
         if shape == 'rect':
             if yi is None:
                 yi = y/2.
             if xi is None:
-                xi = x - self.margin_right_mm/3.*2
+                xi = self.margin_left_mm/3
             if width is None:
-                width = self.margin_right_mm/3.
+                width = self.margin_left_mm/3.
             if height is None:
                 height = y/10
 
-            mst = """<rect
-            x="%s"
-            y="%s"
-            id="%s"
-            width="%s"
-            height="%s"
-            stroke="red"
-            stroke-width="0.5"
-            fill-opacity="0">
-            <title>name: %s
-            description: %s
-            </title>
-            </rect>""" % (xi,
-                          yi,
-                          len(self._standards),
-                          width,
-                          height,
-                          name,
-                          description)
+            mst = {
+                "shape":shape,
+                "xi":xi,
+                "yi":yi,
+                "id":len(self._standards),
+                "width":width,
+                "height":height,
+                "title":{"name":name,
+                "description":description},
+                "mode":mode}
             self._standards.append(mst)
 
     def populate_with_samples(self, material, process='?', thickness='?'):
@@ -492,14 +485,17 @@ class SamplesCollection:
         rdf.set('xmlns:rdfs',"http://www.w3.org/2000/01/rdf-schema#")
         rdf.set('xmlns:dc',"http://purl.org/dc/elements/1.1/")
         desc = ET.SubElement(rdf,'rdf:Description')
-        desc.set('about',self.about)
-        desc.set('dc:title',self.name)
-        desc.set('dc:description',self.description)
-        desc.set('dc:publisher',self.publisher)
+        if self.about is not None:
+            desc.set('about',self.about)
+        if self.name is not None:
+            desc.set('dc:title',self.name)
+        if self.description is not None:
+            desc.set('dc:description',self.description)
+        if self.publisher is not None:
+            desc.set('dc:publisher',self.publisher)
         desc.set('dc:date',self.date)
         desc.set('dc:format',"image/svg+xml")
         desc.set('dc:language',"en")
-        desc.set('about',self.about)
         creator = ET.SubElement(desc,'dc:creator')
         bag = ET.SubElement(creator,'rdf:Bag')
         for i in self.creators:
@@ -512,6 +508,7 @@ class SamplesCollection:
         title_e.set("y",str(ytit))
         title_e.set("font-family","Verdana")
         title_e.set("font-size",str(self.title_font_size_mm))
+        title_e.set("fill","blue")
         title_e.text = self.name
         if border_as_cutline:
             border_e = ET.SubElement(p,'rect')
@@ -542,7 +539,8 @@ class SamplesCollection:
             tite.set("y",str(ty))
             tite.set("font-family","Verdana")
             tite.set("font-size",str(self.label_font_size_mm))
-            tite.text = str(ids)
+            tite.set("fill","blue")
+            tite.text = "ID: %s" %ids
         if self.samples != [] and save_samples:
             sems= ET.SubElement(p, 'g')
             sems.set("id","samples")
@@ -562,20 +560,7 @@ class SamplesCollection:
                         s.set("stroke-opacity","0.8")
                         s.set("fill-opacity","0.3")
                         t = ET.SubElement(s, 'title')
-                        # TODO: better to use a json dump
-                        t.text = """material: %s
-                                    process: %s
-                                    thickness: %s
-                                    status: %s
-                                    applied_date: %s 
-                                    removed_date: %s"""%(
-                                  element['material'],
-                                  element['process'],
-                                  element['thickness'],
-                                  element['status'],
-                                  element['applied_date'],
-                                  element['removed_date']
-                                  )
+                        t.text = json.dumps(element['info'],indent=1)
                     if element['kind'] == 'treatment':
                         s = ET.SubElement(sems, 'rect')
                         s.set("x",str(coord[0] + element['xi']))
@@ -587,17 +572,9 @@ class SamplesCollection:
                         s.set("stroke-width","0.3")
                         s.set("stroke-opacity","0.8")
                         s.set("fill-opacity","0.2")
+                        s.set("fill","magenta")
                         t = ET.SubElement(s, 'title')
-                        t.text = """process: %s
-                                    parameters: %s
-                                    status: %s
-                                    applied_date: %s 
-                                    layer: %s"""%(
-                                  element['process'],
-                                  element['parameters'],
-                                  element['status'],
-                                  element['applied_date'],
-                                  element['layer'])
+                        t.text = json.dumps(element['info'],indent=1)
 
             if self._scalebar != []:
                 sbs = ET.SubElement(p,'g')
@@ -613,21 +590,77 @@ class SamplesCollection:
                     r.set("height",str(i[3]))
                     r.set("stroke-width","0")
                     r.set("fill","blue")
-                for t in texts:
+                for ind,t in enumerate(texts):
                     te = ET.SubElement(sbs,'text')
                     te.set("x",str(t[0]))
                     te.set("y",str(t[1]))
                     te.set("font-family","Verdana")
+                    if ind != len(texts)-1:
+                        te.set("text-anchor","middle")
                     te.set("font-size",str(t[2]))
                     te.text = str(t[3])
+            
+            if self._alignment_MTF_standards != []:
+                mtf = ET.SubElement(p,'g')
+                mtf.set("id","MTF")
+                mtf.set("stroke","none")
+                mtf.set("fill","blue")
+                for i in self._alignment_MTF_standards:
+                    #[utl, utr, btl, btr]
+                    amtf = ET.SubElement(mtf,'g')
+                    a,b = i
+                    path_a = ET.SubElement(amtf,'path')
+                    ta = " M %s %s A %s %s 0 %s 0 %s %s  L %s %s Z" %(
+                    a['xstartpoint'],a['ystartpoint'],
+                    a['r'],a['r'],
+                    a['large_arc_flag'],
+                    a['xendpoint'],a['yendpoint'],
+                    a['xcenter'], a['ycenter'],)
+                    path_a.set('d',ta)
+                    path_b = ET.SubElement(amtf,'path')
+                    tb = " M %s %s A %s %s 0 %s 0 %s %s  L %s %s Z" %(
+                    b['xstartpoint'],b['ystartpoint'],
+                    b['r'],b['r'],
+                    b['large_arc_flag'],
+                    b['xendpoint'],b['yendpoint'],
+                    b['xcenter'], b['ycenter'],)
+                    path_b.set('d',tb)
+                    circle = ET.SubElement(amtf,'circle')
+                    circle.set("cx",str(a['xcenter']))  
+                    circle.set("cy",str(a['ycenter']))  
+                    circle.set("r",str(a['r']))  
+                    circle.set("stroke","blue")  
+                    circle.set("stroke-width","0.5")
+                    circle.set("fill","none")    
 
-            # if self._standards != []:
-            #     f.write(r"""<g id = "standards" stroke="none">"""+"\n")
-            #     for i in self._standards:
-            #         f.write(i+"\n")
-            #     f.write(r"</g>")
-            # #Close the file
-            # f.write(r"</svg>")
+            if self._standards != []:
+                std = ET.SubElement(p,'g')
+                std.set("id","standards")
+                std.set("stroke","none")
+                mode = {'cut':'red'}
+                for i in self._standards:
+                    if i['shape'] == 'circle':
+                        cir = ET.SubElement(std,'circle')
+                        cir.set("cx",str(i['cx']))
+                        cir.set("cy",str(i['cy']))
+                        cir.set("r",str(i['r']))
+                        cir.set("id",str(i['id']))
+                        cir.set("stroke",mode[i['mode']])
+                        T = ET.SubElement(std,'title')
+                        T.text = json.dumps(i['title'],indent=1)
+                    if i['shape'] == 'rect':
+                        rect = ET.SubElement(std,'rect')
+                        rect.set("x",str(i['xi']))
+                        rect.set("y",str(i['yi']))
+                        rect.set("id",str(i['id']))
+                        rect.set("stroke",mode[i['mode']])
+                        rect.set("width",str(i['width']))
+                        rect.set("height",str(i['height']))
+                        rect.set("stroke-width","0.5")
+                        rect.set("fill-opacity","0")
+                        T = ET.SubElement(std,'title')
+                        T.text = json.dumps(i['title'],indent=1)
+
         def indent(elem, level=0):
             i = "\n" + level*"  "
             j = "\n" + (level-1)*"  "

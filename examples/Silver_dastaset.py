@@ -20,7 +20,7 @@ for sample in mySampCol.samples:
     sample.add_treatment("cleaning", "acetone",width_percent=0.5)
 mySampCol.insert_alignment_MTF_standard()
 mySampCol.insert_scalebar()
-#mySampCol.insert_standard()
+mySampCol.insert_standard()
 # we save the svg file with all the information
 mySampCol.save_svg()
 # and the masks

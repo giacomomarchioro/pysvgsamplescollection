@@ -100,31 +100,9 @@ if mySampCol._alignment_MTF_standards != []:
                     lwpolylineb.get_points(format='xyb'),
                     # get closed state also from associated LWPOLYLINE entity
                     is_closed=lwpolylineb.closed,)
-
-                    # We finally ad a circle
+                    # We finally add a circle
                     msp.add_circle(center=(a['xcenter'],a['ycenter']),radius=a['r'],dxfattribs={'layer':'MTF'})
-                    # ta = " M %s %s A %s %s 0 %s 0 %s %s  L %s %s Z" %(
-                    # a['xstartpoint'],a['ystartpoint'],
-                    # a['r'],a['r'],
-                    # a['large_arc_flag'],
-                    # a['xendpoint'],a['yendpoint'],
-                    # a['xcenter'], a['ycenter'],)
-                    # path_a.set('d',ta)
-                    # path_b = ET.SubElement(amtf,'path')
-                    # tb = " M %s %s A %s %s 0 %s 0 %s %s  L %s %s Z" %(
-                    # b['xstartpoint'],b['ystartpoint'],
-                    # b['r'],b['r'],
-                    # b['large_arc_flag'],
-                    # b['xendpoint'],b['yendpoint'],
-                    # b['xcenter'], b['ycenter'],)
-                    # path_b.set('d',tb)
-                    # circle = ET.SubElement(amtf,'circle')
-                    # circle.set("cx",str(a['xcenter']))  
-                    # circle.set("cy",str(a['ycenter']))  
-                    # circle.set("r",str(a['r']))  
-                    # circle.set("stroke","blue")  
-                    # circle.set("stroke-width","0.5")
-                    # circle.set("fill","none")    
+   
 
 
 doc.saveas('line.dxf')
