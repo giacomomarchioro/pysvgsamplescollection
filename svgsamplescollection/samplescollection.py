@@ -299,170 +299,130 @@ class SamplesCollection:
         self.number_of_samples = number
 
 
-    def save_dxf(self, border_as_cutline=True, save_samples=True, name=None):
-        import ezdxf
-        if self._samples_ID == []:
-            self._samples_ID = range(self.number_of_samples)
+    def save_dxf(self, border_as_cutline=True name=None):
         if name is None:
             name = self.name
-
-        doc = ezdxf.new(dxfversion='R2010')
-
-        # Create new table entries (layers, linetypes, text styles, ...).
-        doc.layers.new('TEXTLAYER', dxfattribs={'color': 2})
-
-        # DXF entities (LINE, TEXT, ...) reside in a layout (modelspace, 
-        # paperspace layout or block definition).  
-        msp = doc.modelspace()
-
-        # Add entities to a layout by factory methods: layout.add_...() 
-        msp.add_line((0, 0), (10, 0), dxfattribs={'color': 7})
-        msp.add_text(
-            'Test', 
-            dxfattribs={
-                'layer': 'TEXTLAYER'
-            }).set_pos((0, 0.2), align='CENTER')
-        msp = doc.modelspace()
+        import ezdxf
+        # 0,0 is bottom left while in svg is top left
+        x,y,_ = self.dataset_dimension
+        doc = ezdxf.new('R2010')  # create a new DXF R2010 drawing, official DXF version name: 'AC1024'
+        # set units to millilmters
+        doc.header['$INSUNITS'] = 4
         doc.layers.new(name='Sample holder', dxfattribs={'color': 1})
-        
-        # Save DXF document.
-        
-        x, y, _ = self.dataset_dimension
+        doc.layers.new(name='Text', dxfattribs={'color': 5})
+        msp = doc.modelspace()  # add new entities to the modelspace
+
+        # border line
+        points = [(0, 0), (x, 0), (x, y), (0, y),(0,0)]
+        msp.add_lwpolyline(points, dxfattribs={'layer': 'Sample holder'})
+
+        ytext = y + self._title_offset - self.margin_top_mm
+        msp.add_text("%s" %self.name,
+                    dxfattribs={
+                        'layer':'Text',
+                        'height': self.title_font_size_mm}
+                    ).set_pos((self.margin_left_mm,ytext ), align='LEFT')
+        # samples 
+        if self._samples_ID == []:
+            self._samples_ID = range(self.number_of_samples)
+
         w, h, _ = self.sample_dimension
-        ytit = self.margin_top_mm/2
-        xtit = self.margin_left_mm
-        msp.add_text(
-            self.name, 
-            dxfattribs={
-                'layer': 'TEXTLAYER'
-            }).set_pos((xtit, ytit), align='CENTER')
-            # Collection name
+
+        for index, i in enumerate(self._samples_coordinates):
+                        ids = self._samples_ID[index]
+                        points = [(i[0], y - i[1]),
+                                (i[0]+w, y - i[1]),
+                                (i[0]+w, y - i[1] - h),
+                                (i[0], y - i[1] - h),
+                                (i[0], y - i[1])]
+                        msp.add_lwpolyline(points, dxfattribs={'layer': 'Sample holder'})
+
+                        msp.add_text("ID: %s" %ids,
+                    dxfattribs={
+                        'layer':'Text',
+                        'height': self.label_font_size_mm}
+                    ).set_pos((i[0], y + self.text_y - i[1]), align='LEFT')
 
 
-        if border_as_cutline:
-            points = [(0, 0), (0, y), (x, 0), (x, y)]
-            msp.add_lwpolyline(points)
+        if self._alignment_MTF_standards != []:
+                        doc.layers.new(name='MTF', dxfattribs={'color': 5})
+                        for i in self._alignment_MTF_standards:
+                            #[utl, utr, btl, btr]
+                            a,b = i
+                            ac = ((a['xendpoint'] - a['xstartpoint'])**2 + (a['yendpoint'] - a['ystartpoint'])**2)**0.5
+                            sa = a['r'] - (a['r']**2 - (ac/2)**2)**0.5
+                            binge_a = sa/(ac/2)
+                            apoints = [(a['xcenter'],y - a['ycenter'],0),
+                                    (a['xstartpoint'],y - a['ystartpoint'],binge_a),
+                                    (a['xendpoint'], y - a['yendpoint'],0),
+                                    (a['xcenter'],y - a['ycenter'],0),]
+                            lwpolylinea = msp.add_lwpolyline(apoints,format='xyb', 
+                            dxfattribs={'layer':'MTF'})
+                            bc = ((b['xendpoint'] - b['xstartpoint'])**2 + (b['yendpoint'] - b['ystartpoint'])**2)**0.5
+                            sb = b['r'] - (b['r']**2 - (bc/2)**2)**0.5
+                            binge_b = sb/(bc/2)
+                            bpoints = [(b['xcenter'],y - b['ycenter'],0),
+                                    (b['xstartpoint'], y - b['ystartpoint'],binge_b),
+                                    (b['xendpoint'],y - b['yendpoint'],0),
+                                    (b['xcenter'],y - b['ycenter'],0),]
+                            lwpolylineb = msp.add_lwpolyline(bpoints,format='xyb',dxfattribs={'layer':'MTF'})
 
-#                 f.write( r"""<rect
-#    x="0"
-#    y="0"
-#    id="collection_border"
-#    width="%s"
-#    height="%s"
-#    stroke="red"
-#    stroke-width="1"
-#    fill-opacity="0"  />""" %(x,y)+"\n" )
-#             f.write( r"""<g id="samples_position">"""+"\n" )
-#             for index, i in enumerate(self._samples_coordinates):
-#                 ids = self._samples_ID[index]
-#                 f.write( r"""   <rect
-#       x="%s"
-#       y="%s"
-#       id="%s"
-#       width="%s"
-#       height="%s"
-#       stroke="red"
-#       stroke-width="0.5"
-#       fill-opacity="0" /> """ %(i[0],i[1],ids,w,h)+"\n")
-#                 ty = i[1] - self.text_y
+                            hatch = msp.add_hatch(color=5)
+                            path = hatch.paths.add_polyline_path(
+                            # get path vertices from associated LWPOLYLINE entity
+                            lwpolylinea.get_points(format='xyb'),
+                            # get closed state also from associated LWPOLYLINE entity
+                            is_closed=lwpolylinea.closed,)
+                            path = hatch.paths.add_polyline_path(
+                            # get path vertices from associated LWPOLYLINE entity
+                            lwpolylineb.get_points(format='xyb'),
+                            # get closed state also from associated LWPOLYLINE entity
+                            is_closed=lwpolylineb.closed,)
+                            # We finally add a circle
+                            msp.add_circle(center=(a['xcenter'],a['ycenter']),radius=a['r'],dxfattribs={'layer':'MTF'})
 
-#                 f.write( r"""   <text
-#       x="%s"
-#       y="%s"
-#       font-family="Verdana"
-#       font-size="5"
-#       fill="blue" >
-#       ID: %s  </text>""" %(i[0],ty,ids)+"\n")
-#             f.write( r"</g>"+"\n" )
+        if self._scalebar != []:
+            doc.layers.new(name='scalebar', dxfattribs={'color': 5})
+            rectangles,texts = self._scalebar
+            for i in rectangles:
+                points = [(i[0], y - i[1]),
+                                    (i[0]+i[2], y - i[1]),
+                                    (i[0]+i[2], y - i[1] - i[3]),
+                                    (i[0], y - i[1] - i[3]),
+                                    (i[0], y - i[1])]
+                lwpolyliner = msp.add_lwpolyline(points, 
+                            dxfattribs={'layer':'scalebar'})
+                hatch = msp.add_hatch(color=5)
+                path = hatch.paths.add_polyline_path(
+                # get path vertices from associated LWPOLYLINE entity
+                lwpolyliner.get_points(format='xy'),
+                # get closed state also from associated LWPOLYLINE entity
+                is_closed=lwpolyliner.closed,)
+            for j in texts:
+                align = 'CENTER'
+                if j[-1] == 'mm':
+                    align = 'LEFT'
+                msp.add_text(str(j[3]),
+                    dxfattribs={
+                        'layer':'Text',
+                        'height': str(j[2])}
+                    ).set_pos((j[0], y - j[1]), align=align)
 
-#             if self.samples != [] and save_samples:
-#                 f.write( r"""<g id="samples">"""+"\n" )
-#                 for index, coord in enumerate(self._samples_coordinates):
-#                     ids = self._samples_ID[index]
-#                     sample = self.samples[index]
-#                     for element in sample.elements.values():
-#                         if element['kind'] == 'layer':
-#                             f.write(r"""   <rect
+        if self._standards != []:
+            doc.layers.new(name='standards', dxfattribs={'color': 1})
+            for i in self._standards:
+                if i["shape"] == "rect":
+                    points = [(i["xi"], y - i["yi"]),
+                                        (i["xi"]+i["width"], y - i["yi"]),
+                                        (i["xi"]+i["width"], y - i["height"]- i["yi"]),
+                                        (i["xi"], y - i["height"] - i["yi"]),
+                                        (i["xi"], y - i["yi"])]
+                    lwpolyliner = msp.add_lwpolyline(points, 
+                                dxfattribs={'layer':'standards'})
+                if i["shape"] == "circle":
+                    msp.add_circle(center=(i['xi'],i['yi']),radius=i['radius'],dxfattribs={'layer':'standards'})
 
-#       x="%s"
-#       y="%s"
-#       id="%s"
-#       width="%s"
-#       height="%s"
-#       stroke="yellow"
-#       stroke-width="0.4"
-#       stroke-opacity="0.8"
-#       fill-opacity="0.3" >
-#       <title>material: %s
-#     process: %s
-#     thickness: %s
-#     status: %s
-#     applied_date: %s 
-#     removed_date: %s</title>
-#       </rect>
-#       """ %(
-#                                   coord[0] + element['xi'],
-#                                   coord[1] + element['yi'],
-#                                   ids,
-#                                   element['xf']-element['xi'],
-#                                   element['yf']-element['yi'],
-#                                   element['material'],
-#                                   element['process'],
-#                                   element['thickness'],
-#                                   element['status'],
-#                                   element['applied_date'],
-#                                   element['removed_date']
-#                                   )+"\n")
-#                         if element['kind'] == 'treatment':
-#                            f.write( r"""   <rect
-#       x="%s"
-#       y="%s"
-#       id="%s"
-#       width="%s"
-#       height="%s"
-#       stroke="magenta"
-#       stroke-opacity="0.8"
-#       stroke-width="0.3"
-#       fill="magenta"
-#       fill-opacity="0.2" >
-#       <title>process: %s
-#     parameters: %s
-#     status: %s
-#     applied_date: %s
-#     layer: %s
-#     </title>
-#       </rect>      """ %(coord[0] + element['xi'],
-#                                   coord[1] + element['yi'],
-#                                   ids,
-#                                   element['xf']-element['xi'],
-#                                   element['yf']-element['yi'],
-#                                   element['process'],
-#                                   element['parameters'],
-#                                   element['status'],
-#                                   element['applied_date'],
-#                                   element['layer'],
-#                                   )+"\n")
-
-#                 f.write(r"</g>")
-
-#             if self._alignment_MTF_standards != []:
-#                 f.write(r"""<g id = "MTF" stroke="none" fill="blue">"""+"\n")
-#                 for i in self._alignment_MTF_standards:
-#                     f.write(i+"\n")
-#                 f.write(r"</g>")
-#             if self._scalebar != []:
-#                 f.write(r"""<g id = "scalebar" stroke="none" fill="blue">"""+"\n")
-#                 for i in self._scalebar:
-#                     f.write(i+"\n")
-#                 f.write(r"</g>")
-#             if self._standards != []:
-#                 f.write(r"""<g id = "standards" stroke="none">"""+"\n")
-#                 for i in self._standards:
-#                     f.write(i+"\n")
-#                 f.write(r"</g>")
-#             #Close the file
-#             f.write(r"</svg>")
-        doc.saveas('test.dxf')
+        doc.saveas('%s.dxf' %self.name)
   
     def save_svg(self, border_as_cutline=True, save_samples=True, name=None):
         if self._samples_ID == []:
