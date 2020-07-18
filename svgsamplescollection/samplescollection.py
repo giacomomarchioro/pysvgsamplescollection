@@ -75,8 +75,8 @@ class SamplesCollection:
         self.samples = []
         self.number_of_samples = None
         self.samples_dimension = ['x','y']
-        self.margin_top_mm = 20
-        self.margin_bottom_mm = 20
+        self.margin_top_mm = 10
+        self.margin_bottom_mm = 10
         self.margin_left_mm = 20
         self.margin_right_mm = 20
         self.text_y = None

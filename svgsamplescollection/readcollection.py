@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 import warnings
 
 
-class ReadCollection():
+class ReadCollection:
     
     def __init__(self,path):
         self.path = path
@@ -11,7 +11,10 @@ class ReadCollection():
         tree = ET.parse(self.path)
         self.root = tree.getroot()
         for child in self.root:
-            self.records[child.attrib['id']] = child
+            try:
+                self.records[child.attrib['id']] = child
+            except KeyError:
+                pass
         self.last_selection = None
 
     def _get_xiyixfyf(self,rectobj):
@@ -231,7 +234,7 @@ class ReadCollection():
         #print(res)
         return res    
 
-    def show_last_selction(self,):
+    def show_last_selection(self,):
        if self.last_selection is not None:           
            from shapely.geometry import MultiPolygon
            from shapely.affinity import scale

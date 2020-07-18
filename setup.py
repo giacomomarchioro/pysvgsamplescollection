@@ -5,10 +5,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="svgsamplescolletion",
-    version="0.0.1",
+    version="0.0.2",
     author="Giacomo Marchioro",
     author_email="giacomo.marchioro@outlook.com",
-    description="This package allows creating samples collections drawing an SVG file that can be visualized and queried.",
+    description="This package allows creating flat samples collections drawing an SVG file that can be visualized and queried.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/giacomomarchioro/pysvgsamplescollection",
