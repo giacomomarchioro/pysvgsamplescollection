@@ -11,7 +11,7 @@ import json
 
 class SamplesCollection:
     """
-    The Samplescollection class rappresent the Samplescollection itself.
+    The Samplescollection class reppresent the Samplescollection itself.
 
     It contains the methods for adding the samples and saving them to the svg
     file.
@@ -281,7 +281,7 @@ class SamplesCollection:
         self.number_of_samples = number
 
 
-    def save_dxf(self, border_as_cutline=True,name=None):
+    def save_dxf(self, border_as_cutline=True,name=None,positioner=False,positioner_margin=10):
         if name is None:
             name = self.name
         import ezdxf
@@ -304,6 +304,15 @@ class SamplesCollection:
                         'layer':'Text',
                         'height': self.title_font_size_mm}
                     ).set_pos((self.margin_left_mm,ytext ), align='LEFT')
+        if positioner and border_as_cutline:
+            doc.layers.new(name='positioner', dxfattribs={'color': 1})
+            points = [(0 - positioner_margin, 0 - positioner_margin),
+                      (x + positioner_margin, 0 - positioner_margin),
+                      (x + positioner_margin, y + positioner_margin),
+                      (0 - positioner_margin, y + positioner_margin),
+                      (0 - positioner_margin, 0 - positioner_margin)]
+            msp.add_lwpolyline(points, dxfattribs={'layer': 'positioner'})
+
         # samples 
         if self._samples_ID == []:
             self._samples_ID = range(self.number_of_samples)
@@ -494,7 +503,7 @@ class SamplesCollection:
             tree.write(name)
             return True
 
-    def _create_svgheader(self, border_as_cutline=True,name=None):
+    def _create_svgheader(self, border_as_cutline=True, save_samples=True, name=None,positioner=False,positioner_margin=10):
         if name == None:
             name = self.name
         x, y, _ = self.dataset_dimension
@@ -502,9 +511,17 @@ class SamplesCollection:
         p = ET.Element('svg')
         p.set("version", "1.1")
         p.set("baseProfile", "full")
-        p.set("width","%smm"%x)
-        p.set("height","%smm"%y)
-        p.set("viewBox","0 0 %s %s"%(x,y))
+        if positioner and not save_samples and border_as_cutline:
+            p.set("width","%smm"%(x+positioner_margin*2))
+            p.set("height","%smm"%(y+positioner_margin*2))
+            p.set("viewBox","%s %s %s %s"%(-positioner_margin,
+                                           -positioner_margin,
+                                           x+positioner_margin*2,
+                                           y+positioner_margin*2))
+        else:
+            p.set("width","%smm"%x)
+            p.set("height","%smm"%y)
+            p.set("viewBox","0 0 %s %s"%(x,y))
         p.set("xmlns","http://www.w3.org/2000/svg")
         # https://www.w3.org/TR/SVG11/metadata.html
         metadata = ET.SubElement(p,'metadata')
@@ -548,9 +565,19 @@ class SamplesCollection:
             border_e.set("stroke","red")
             border_e.set("stroke-width","1")
             border_e.set("fill-opacity","0")
+        if positioner and not save_samples and border_as_cutline:
+            pos = ET.SubElement(p, 'rect')
+            pos.set("x",str(0 - positioner_margin))
+            pos.set("y",str(0 - positioner_margin))
+            pos.set("id","positioner")
+            pos.set("width",str(x + positioner_margin*2))
+            pos.set("height",str(y + positioner_margin*2))
+            pos.set("stroke","red")
+            pos.set("stroke-width","0.5")
+            pos.set("fill-opacity","0")
         return p
 
-    def save_svg(self, border_as_cutline=True, save_samples=True, name=None):
+    def save_svg(self, border_as_cutline=True, save_samples=True, name=None,positioner=False,positioner_margin=10):
         if self._samples_ID == []:
             self._samples_ID = range(self.number_of_samples)
         if name is None:
@@ -558,7 +585,9 @@ class SamplesCollection:
         x, y, _ = self.dataset_dimension
         w, h, _ = self.sample_dimension
         # create svg header and get root of xml file
-        p = self._create_svgheader(border_as_cutline=border_as_cutline,name=name)
+        p = self._create_svgheader(border_as_cutline=border_as_cutline,name=name,
+                                   save_samples=save_samples,positioner=positioner,
+                                   positioner_margin=positioner_margin)
         # we add the sample position
         sem_pos = ET.SubElement(p, 'g')
         sem_pos.set("id","samples_position")
@@ -700,12 +729,16 @@ class SamplesCollection:
                     rect.set("fill-opacity","0")
                     T = ET.SubElement(std,'title')
                     T.text = json.dumps(i['title'],indent=1)
+        if not save_samples:
+            name = "sampleholder_%s" %name
         self._save_tree(p,name)
         
-    def save_masks_svg(self,border_as_cutline=True,labels=True):
+    def save_masks_svg(self,border_as_cutline=True,labels=True,positioner=False,positioner_margin=10):
 
         # This saves only the sample holder
-        self.save_svg(border_as_cutline=True, save_samples=False,name ='sampleholder')
+        self.save_svg(border_as_cutline=True, save_samples=False,
+                      name = None,positioner=positioner,
+                      positioner_margin=positioner_margin)
         # for each step we save a mask
         for idx in range(1,self.current_step+1):
             name = "mask_step%s" %idx
