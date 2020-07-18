@@ -94,6 +94,8 @@ class SamplesCollection:
         self.description = None
         self.date = str(datetime.now())
         self.creators = []
+        self.steps = {}
+        self.current_step = 0
         self._alignment_MTF_standards = []
         self._samples_coordinates = []
         self._samples_ID = []
@@ -266,40 +268,20 @@ class SamplesCollection:
                        process=process,
                        thickness=thickness)
             self.samples.append(s)
-
-    def add_sample(self, material, process='?'):
-        '''
-        Add sample instance to the dataset.
-        '''
-        width, height, thickness = self.sample_dimension
-        if width is str or height is str:
-            ValueError("Sample size haven't been set or are incorrect!")
-        s = Sample(width=width,
-                   height=height,
-                   material=material,
-                   process=process,
-                   thickness=thickness)
-        self.samples.append(s)
-        return s
     
-    def add_layers(self,ids=None,):
-        if ids is None:
-            ids = range(self.number_of_samples)
-        for i in ids:
-            self.samples[i].add_layer()
+    def add_step(self,description):
+        self.current_step +=1
+        self.steps[self.current_step] = description
+        for sample in self.samples:
+            sample.steps[self.current_step] = description
+            sample.current_step = self.current_step
         
-    
-    def add_treatments(self,):
-        pass
-    
-    def add_step(self,):
-        pass
     
     def set_number_of_samples(self, number):
         self.number_of_samples = number
 
 
-    def save_dxf(self, border_as_cutline=True name=None):
+    def save_dxf(self, border_as_cutline=True,name=None):
         if name is None:
             name = self.name
         import ezdxf
@@ -423,11 +405,97 @@ class SamplesCollection:
                     msp.add_circle(center=(i['xi'],i['yi']),radius=i['radius'],dxfattribs={'layer':'standards'})
 
         doc.saveas('%s.dxf' %self.name)
-  
-    def save_svg(self, border_as_cutline=True, save_samples=True, name=None):
+    
+
+    def save_masks_dxf(self,border_as_cutline=True,labels=True,name=None):
+        import ezdxf
+        if name is None:
+            name = self.name
+        # samples 
         if self._samples_ID == []:
             self._samples_ID = range(self.number_of_samples)
-        if name is None:
+
+        w, h, _ = self.sample_dimension
+        x,y,_ = self.dataset_dimension
+        # for each step we save a mask
+        for idx in range(1,self.current_step+1):       
+            # 0,0 is bottom left while in svg is top left
+            
+            doc = ezdxf.new('R2010')  # create a new DXF R2010 drawing, official DXF version name: 'AC1024'
+            # set units to millilmters
+            doc.header['$INSUNITS'] = 4
+            doc.layers.new(name='Sample holder', dxfattribs={'color': 1})
+            doc.layers.new(name='Text', dxfattribs={'color': 5})
+            msp = doc.modelspace()  # add new entities to the modelspace
+
+            # border line
+            points = [(0, 0), (x, 0), (x, y), (0, y),(0,0)]
+            msp.add_lwpolyline(points, dxfattribs={'layer': 'Sample holder'})
+
+            ytext = y + self._title_offset - self.margin_top_mm
+            msp.add_text("%s_step%s" %(self.name,idx),
+                        dxfattribs={
+                            'layer':'Text',
+                            'height': self.title_font_size_mm}
+                        ).set_pos((self.margin_left_mm,ytext ), align='LEFT')
+            for index, coord in enumerate(self._samples_coordinates):
+                # xi and yi are relative to the sample coordiantes
+                ids = self._samples_ID[index]
+                sample = self.samples[index]
+                for element in sample.elements.values():
+                    if element['info']['step'] == idx:
+                        points = [(coord[0], y - coord[1]),
+                                (coord[0]+w, y - coord[1]),
+                                (coord[0]+w, y - coord[1] - h),
+                                (coord[0], y - coord[1] - h),
+                                (coord[0], y - coord[1])]
+                        msp.add_lwpolyline(points, dxfattribs={'layer': 'Sample holder'})
+                        if labels:
+                            tick = ''
+                            if 'material' in element['info'].keys():
+                                var = element['info']['material']
+                                tick = element['info']['thickness_microns']
+                                tick = ", %s um" %tick
+                            else:
+                                var = element['info']['parameters']
+                            proc = element['info']['process']
+                            msp.add_text("%s, %s%s" %(proc,var,tick),
+                            dxfattribs={
+                                'layer':'Text',
+                                'height': self.label_font_size_mm}
+                            ).set_pos((coord[0], y + self.text_y - coord[1]), align='LEFT')
+            doc.saveas('mask_step%s.dxf' %idx)
+                           
+                            
+
+
+    def _save_tree(self,p,name):
+            def indent(elem, level=0):
+                i = "\n" + level*"  "
+                j = "\n" + (level-1)*"  "
+                if len(elem):
+                    if not elem.text or not elem.text.strip():
+                        elem.text = i + "  "
+                    if not elem.tail or not elem.tail.strip():
+                        elem.tail = i
+                    for subelem in elem:
+                        indent(subelem, level+1)
+                    if not elem.tail or not elem.tail.strip():
+                        elem.tail = j
+                else:
+                    if level and (not elem.tail or not elem.tail.strip()):
+                        elem.tail = j
+                return elem  
+
+            indent(p)
+            tree = ET.ElementTree(p)
+            if not name.endswith('.svg'):
+                name+='.svg'
+            tree.write(name)
+            return True
+
+    def _create_svgheader(self, border_as_cutline=True,name=None):
+        if name == None:
             name = self.name
         x, y, _ = self.dataset_dimension
         w, h, _ = self.sample_dimension
@@ -447,8 +515,8 @@ class SamplesCollection:
         desc = ET.SubElement(rdf,'rdf:Description')
         if self.about is not None:
             desc.set('about',self.about)
-        if self.name is not None:
-            desc.set('dc:title',self.name)
+        if name is not None:
+            desc.set('dc:title',name)
         if self.description is not None:
             desc.set('dc:description',self.description)
         if self.publisher is not None:
@@ -469,7 +537,7 @@ class SamplesCollection:
         title_e.set("font-family","Verdana")
         title_e.set("font-size",str(self.title_font_size_mm))
         title_e.set("fill","blue")
-        title_e.text = self.name
+        title_e.text = name
         if border_as_cutline:
             border_e = ET.SubElement(p,'rect')
             border_e.set("x","0")
@@ -480,11 +548,23 @@ class SamplesCollection:
             border_e.set("stroke","red")
             border_e.set("stroke-width","1")
             border_e.set("fill-opacity","0")
+        return p
+
+    def save_svg(self, border_as_cutline=True, save_samples=True, name=None):
+        if self._samples_ID == []:
+            self._samples_ID = range(self.number_of_samples)
+        if name is None:
+            name = self.name
+        x, y, _ = self.dataset_dimension
+        w, h, _ = self.sample_dimension
+        # create svg header and get root of xml file
+        p = self._create_svgheader(border_as_cutline=border_as_cutline,name=name)
+        # we add the sample position
         sem_pos = ET.SubElement(p, 'g')
         sem_pos.set("id","samples_position")
         for index, i in enumerate(self._samples_coordinates):
             ids = self._samples_ID[index]
-            se = ET.SubElement(sem_pos, 'g')
+            se = ET.SubElement(sem_pos, 'rect')
             se.set("x",str(i[0]))
             se.set("y",str(i[1]))
             se.set("id",str(ids))
@@ -536,115 +616,141 @@ class SamplesCollection:
                         t = ET.SubElement(s, 'title')
                         t.text = json.dumps(element['info'],indent=1)
 
-            if self._scalebar != []:
-                sbs = ET.SubElement(p,'g')
-                sbs.set("id","scalebar")
-                sbs.set("stroke","none")
-                sbs.set("fill","blue")
-                rects, texts = self._scalebar
-                for i in rects:
-                    r = ET.SubElement(sbs,'rect')
-                    r.set("x",str(i[0]))
-                    r.set("y",str(i[1]))
-                    r.set("width",str(i[2]))
-                    r.set("height",str(i[3]))
-                    r.set("stroke-width","0")
-                    r.set("fill","blue")
-                for ind,t in enumerate(texts):
-                    te = ET.SubElement(sbs,'text')
-                    te.set("x",str(t[0]))
-                    te.set("y",str(t[1]))
-                    te.set("font-family","Verdana")
-                    if ind != len(texts)-1:
-                        te.set("text-anchor","middle")
-                    te.set("font-size",str(t[2]))
-                    te.text = str(t[3])
-            
-            if self._alignment_MTF_standards != []:
-                mtf = ET.SubElement(p,'g')
-                mtf.set("id","MTF")
-                mtf.set("stroke","none")
-                mtf.set("fill","blue")
-                for i in self._alignment_MTF_standards:
-                    #[utl, utr, btl, btr]
-                    amtf = ET.SubElement(mtf,'g')
-                    a,b = i
-                    path_a = ET.SubElement(amtf,'path')
-                    ta = " M %s %s A %s %s 0 %s 0 %s %s  L %s %s Z" %(
-                    a['xstartpoint'],a['ystartpoint'],
-                    a['r'],a['r'],
-                    a['large_arc_flag'],
-                    a['xendpoint'],a['yendpoint'],
-                    a['xcenter'], a['ycenter'],)
-                    path_a.set('d',ta)
-                    path_b = ET.SubElement(amtf,'path')
-                    tb = " M %s %s A %s %s 0 %s 0 %s %s  L %s %s Z" %(
-                    b['xstartpoint'],b['ystartpoint'],
-                    b['r'],b['r'],
-                    b['large_arc_flag'],
-                    b['xendpoint'],b['yendpoint'],
-                    b['xcenter'], b['ycenter'],)
-                    path_b.set('d',tb)
-                    circle = ET.SubElement(amtf,'circle')
-                    circle.set("cx",str(a['xcenter']))  
-                    circle.set("cy",str(a['ycenter']))  
-                    circle.set("r",str(a['r']))  
-                    circle.set("stroke","blue")  
-                    circle.set("stroke-width","0.5")
-                    circle.set("fill","none")    
+        if self._scalebar != []:
+            sbs = ET.SubElement(p,'g')
+            sbs.set("id","scalebar")
+            sbs.set("stroke","none")
+            sbs.set("fill","blue")
+            rects, texts = self._scalebar
+            for i in rects:
+                r = ET.SubElement(sbs,'rect')
+                r.set("x",str(i[0]))
+                r.set("y",str(i[1]))
+                r.set("width",str(i[2]))
+                r.set("height",str(i[3]))
+                r.set("stroke-width","0")
+                r.set("fill","blue")
+            for ind,t in enumerate(texts):
+                te = ET.SubElement(sbs,'text')
+                te.set("x",str(t[0]))
+                te.set("y",str(t[1]))
+                te.set("font-family","Verdana")
+                if ind != len(texts)-1:
+                    te.set("text-anchor","middle")
+                te.set("font-size",str(t[2]))
+                te.text = str(t[3])
+        
+        if self._alignment_MTF_standards != []:
+            mtf = ET.SubElement(p,'g')
+            mtf.set("id","MTF")
+            mtf.set("stroke","none")
+            mtf.set("fill","blue")
+            for i in self._alignment_MTF_standards:
+                #[utl, utr, btl, btr]
+                amtf = ET.SubElement(mtf,'g')
+                a,b = i
+                path_a = ET.SubElement(amtf,'path')
+                ta = " M %s %s A %s %s 0 %s 0 %s %s  L %s %s Z" %(
+                a['xstartpoint'],a['ystartpoint'],
+                a['r'],a['r'],
+                a['large_arc_flag'],
+                a['xendpoint'],a['yendpoint'],
+                a['xcenter'], a['ycenter'],)
+                path_a.set('d',ta)
+                path_b = ET.SubElement(amtf,'path')
+                tb = " M %s %s A %s %s 0 %s 0 %s %s  L %s %s Z" %(
+                b['xstartpoint'],b['ystartpoint'],
+                b['r'],b['r'],
+                b['large_arc_flag'],
+                b['xendpoint'],b['yendpoint'],
+                b['xcenter'], b['ycenter'],)
+                path_b.set('d',tb)
+                circle = ET.SubElement(amtf,'circle')
+                circle.set("cx",str(a['xcenter']))  
+                circle.set("cy",str(a['ycenter']))  
+                circle.set("r",str(a['r']))  
+                circle.set("stroke","blue")  
+                circle.set("stroke-width","0.5")
+                circle.set("fill","none")    
 
-            if self._standards != []:
-                std = ET.SubElement(p,'g')
-                std.set("id","standards")
-                std.set("stroke","none")
-                mode = {'cut':'red'}
-                for i in self._standards:
-                    if i['shape'] == 'circle':
-                        cir = ET.SubElement(std,'circle')
-                        cir.set("cx",str(i['cx']))
-                        cir.set("cy",str(i['cy']))
-                        cir.set("r",str(i['r']))
-                        cir.set("id",str(i['id']))
-                        cir.set("stroke",mode[i['mode']])
-                        T = ET.SubElement(std,'title')
-                        T.text = json.dumps(i['title'],indent=1)
-                    if i['shape'] == 'rect':
-                        rect = ET.SubElement(std,'rect')
-                        rect.set("x",str(i['xi']))
-                        rect.set("y",str(i['yi']))
-                        rect.set("id",str(i['id']))
-                        rect.set("stroke",mode[i['mode']])
-                        rect.set("width",str(i['width']))
-                        rect.set("height",str(i['height']))
-                        rect.set("stroke-width","0.5")
-                        rect.set("fill-opacity","0")
-                        T = ET.SubElement(std,'title')
-                        T.text = json.dumps(i['title'],indent=1)
+        if self._standards != []:
+            std = ET.SubElement(p,'g')
+            std.set("id","standards")
+            std.set("stroke","none")
+            mode = {'cut':'red'}
+            for i in self._standards:
+                if i['shape'] == 'circle':
+                    cir = ET.SubElement(std,'circle')
+                    cir.set("cx",str(i['cx']))
+                    cir.set("cy",str(i['cy']))
+                    cir.set("r",str(i['r']))
+                    cir.set("id",str(i['id']))
+                    cir.set("stroke",mode[i['mode']])
+                    T = ET.SubElement(std,'title')
+                    T.text = json.dumps(i['title'],indent=1)
+                if i['shape'] == 'rect':
+                    rect = ET.SubElement(std,'rect')
+                    rect.set("x",str(i['xi']))
+                    rect.set("y",str(i['yi']))
+                    rect.set("id",str(i['id']))
+                    rect.set("stroke",mode[i['mode']])
+                    rect.set("width",str(i['width']))
+                    rect.set("height",str(i['height']))
+                    rect.set("stroke-width","0.5")
+                    rect.set("fill-opacity","0")
+                    T = ET.SubElement(std,'title')
+                    T.text = json.dumps(i['title'],indent=1)
+        self._save_tree(p,name)
+        
+    def save_masks_svg(self,border_as_cutline=True,labels=True):
 
-        def indent(elem, level=0):
-            i = "\n" + level*"  "
-            j = "\n" + (level-1)*"  "
-            if len(elem):
-                if not elem.text or not elem.text.strip():
-                    elem.text = i + "  "
-                if not elem.tail or not elem.tail.strip():
-                    elem.tail = i
-                for subelem in elem:
-                    indent(subelem, level+1)
-                if not elem.tail or not elem.tail.strip():
-                    elem.tail = j
-            else:
-                if level and (not elem.tail or not elem.tail.strip()):
-                    elem.tail = j
-            return elem  
+        # This saves only the sample holder
+        self.save_svg(border_as_cutline=True, save_samples=False,name ='sampleholder')
+        # for each step we save a mask
+        for idx in range(1,self.current_step+1):
+            name = "mask_step%s" %idx
+            p = self._create_svgheader(border_as_cutline=border_as_cutline,name=name)
+            sems= ET.SubElement(p, 'g')
+            sems.set("id","layers")
+            for index, coord in enumerate(self._samples_coordinates):
+                # xi and yi are relative to the sample coordiantes
+                ids = self._samples_ID[index]
+                sample = self.samples[index]
+                for element in sample.elements.values():
+                    if element['info']['step'] == idx:
+                        s = ET.SubElement(sems, 'rect')
+                        s.set("x",str(coord[0] + element['xi']))
+                        s.set("y",str(coord[1] + element['yi']))
+                        s.set("id",str(ids))
+                        s.set("width",str(element['xf']-element['xi']))
+                        s.set("height",str(element['yf']-element['yi']))
+                        s.set("stroke","red")
+                        s.set("stroke","red")
+                        s.set("stroke-width","0.5")
+                        s.set("fill-opacity","0")
+                        t = ET.SubElement(s, 'title')
+                        t.text = json.dumps(element['info'],indent=1)
+                        ty = coord[1] - self.text_y
+                        if labels:
+                            tite = ET.SubElement(p, 'text')
+                            tite.set("x",str(coord[0]))
+                            tite.set("y",str(ty))
+                            tite.set("font-family","Verdana")
+                            tite.set("font-size",str(self.label_font_size_mm))
+                            tite.set("fill","blue")
+                            tick = ''
+                            if 'material' in element['info'].keys():
+                                var = element['info']['material']
+                                tick = element['info']['thickness_microns']
+                                tick = ", %s um" %tick
+                            else:
+                                var = element['info']['parameters']
+                            proc = element['info']['process']
+                            tite.text = "%s, %s%s" %(proc,var,tick)
+            self._save_tree(p,name)
 
-        indent(p)
-        tree = ET.ElementTree(p)
-        if not name.endswith('.svg'):
-            name+='.svg'
-        tree.write(name)
 
-    def save_masks_svg(self,border_as_cutline=True):
+    def nosteps_save_masks_svg(self,border_as_cutline=True):
         # TODO: it's actually better to save mask of a single step
         samx = max([sample._number_of_elements for sample in self.samples])
         # This saves only the sample holder

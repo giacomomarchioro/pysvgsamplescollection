@@ -10,12 +10,12 @@ class Sample:
         self.width = width
         self.height = height
         self.elements = {}
+        self.steps = {}
+        self.current_step = 1
         self._layers_indexes = []
         self._treatments_indexes = []
-        self._markers_indexes = []
-        self._other_indexes = []
         self._number_of_elements = 0
-        self.add_layer(material,process,thickness)
+        self.add_layer(material,process,thickness,step=1)
 
     def add_layer(self,
                   material,
@@ -23,11 +23,14 @@ class Sample:
                   thickness='?',
                   width_percent = 1,
                   height_percent = 1,
-                  step='?',
+                  step=None,
                   xi = 0,
                   yi = 0,
                   xf = None,
                   yf = None,):
+        
+        if step is None: 
+            step = self.current_step
 
         if xf == None:
                 xf = self.width*width_percent
@@ -47,7 +50,7 @@ class Sample:
          'info':{
          'material':material,
          'process':process,
-         'thickness':thickness,
+         'thickness_microns':thickness,
          'status':'?',
          'step':step, # linked step
          'applied_date':'?',
@@ -69,10 +72,14 @@ class Sample:
                   layer=None,
                   width_percent = 1,
                   height_percent = 1,
+                  step = None,
                   xi = 0,
                   yi = 0,
                   xf = None,
                   yf = None,):
+
+        if step is None: 
+            step = self.current_step
 
         if xf == None:
                 xf = self.width*width_percent
@@ -98,7 +105,8 @@ class Sample:
          'parameters':parameters,
          'status':'?',
          'applied_date':'?',
-         'layer':layer},
+         'layer':layer,
+         'step':step},
          'xi':xi,
          'yi':yi,
          'xf':xf,
@@ -108,14 +116,7 @@ class Sample:
         self.elements[self._number_of_elements] = info
         self._treatments_indexes.append(self._number_of_elements)
         self._number_of_elements += 1
-        
-    def add_vertical_line(self):
-        pass
-    
-    def add_horizontal_line(self):
-        pass
-    
-    
+
     def get_layers(self):
         return itemgetter(*self._layers_indexes)(self.elements)
     
@@ -131,3 +132,4 @@ if __name__ == "__main__":
     print(s._number_of_elements)
     s.add_layer('coating','depostion',width_percent = 0.5)
     print(s._number_of_elements)
+
