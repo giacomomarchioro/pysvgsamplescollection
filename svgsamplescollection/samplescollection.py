@@ -271,7 +271,9 @@ class SamplesCollection:
     
     def add_step(self,description):
         self.current_step +=1
-        self.steps[self.current_step] = description
+        self.steps[self.current_step] = {"description": description,
+                "status":"?",
+                "date":"?"}
         for sample in self.samples:
             sample.steps[self.current_step] = description
             sample.current_step = self.current_step
@@ -442,7 +444,7 @@ class SamplesCollection:
             msp.add_lwpolyline(points, dxfattribs={'layer': 'Sample holder'})
 
             ytext = y + self._title_offset - self.margin_top_mm
-            msp.add_text("%s_step%s" %(self.name,idx),
+            msp.add_text("%s step %s" %(self.name,idx),
                         dxfattribs={
                             'layer':'Text',
                             'height': self.title_font_size_mm}
@@ -555,16 +557,20 @@ class SamplesCollection:
         title_e.set("font-size",str(self.title_font_size_mm))
         title_e.set("fill","blue")
         title_e.text = name
+        border_e = ET.SubElement(p,'rect')
+        border_e.set("x","0")
+        border_e.set("y","0")
+        border_e.set("id","collection_border")
+        border_e.set("width",str(x))
+        border_e.set("height",str(y))
+        border_e.set("stroke-width","1")
+        border_e.set("fill-opacity","0")
         if border_as_cutline:
-            border_e = ET.SubElement(p,'rect')
-            border_e.set("x","0")
-            border_e.set("y","0")
-            border_e.set("id","collection_border")
-            border_e.set("width",str(x))
-            border_e.set("height",str(y))
             border_e.set("stroke","red")
-            border_e.set("stroke-width","1")
-            border_e.set("fill-opacity","0")
+        else:
+            border_e.set("stroke","blue")
+        tx = ET.SubElement(border_e, 'title')
+        tx.text = json.dumps(self.steps,indent=1)
         if positioner and not save_samples and border_as_cutline:
             pos = ET.SubElement(p, 'rect')
             pos.set("x",str(0 - positioner_margin))
@@ -741,7 +747,7 @@ class SamplesCollection:
                       positioner_margin=positioner_margin)
         # for each step we save a mask
         for idx in range(1,self.current_step+1):
-            name = "mask_step%s" %idx
+            name = "mask step %s" %idx
             p = self._create_svgheader(border_as_cutline=border_as_cutline,name=name)
             sems= ET.SubElement(p, 'g')
             sems.set("id","layers")
