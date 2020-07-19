@@ -525,6 +525,8 @@ class SamplesCollection:
             p.set("height","%smm"%y)
             p.set("viewBox","0 0 %s %s"%(x,y))
         p.set("xmlns","http://www.w3.org/2000/svg")
+        main_title = ET.SubElement(p, 'title')
+        main_title.text = name
         # https://www.w3.org/TR/SVG11/metadata.html
         metadata = ET.SubElement(p,'metadata')
         rdf = ET.SubElement(metadata,'rdf:RDF')
@@ -550,6 +552,10 @@ class SamplesCollection:
             c.text = i
         ytit = self.margin_top_mm - self._title_offset
         xtit = self.margin_left_mm
+        # Image
+        img = ET.SubElement(p, 'image')
+        img.set("id","backgroundimage")
+        # Title
         title_e = ET.SubElement(p, 'text')
         title_e.set("x",str(xtit))
         title_e.set("y",str(ytit))
