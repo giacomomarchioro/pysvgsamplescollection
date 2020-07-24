@@ -283,17 +283,27 @@ class SamplesCollection:
         self.number_of_samples = number
 
 
-    def save_dxf(self, border_as_cutline=True,name=None,positioner=False,positioner_margin=10):
+    def save_dxf(self, border_as_cutline=True,name=None,positioner=False,positioner_margin=10,samples_as_cutline=True):
         if name is None:
             name = self.name
         import ezdxf
         # 0,0 is bottom left while in svg is top left
         x,y,_ = self.dataset_dimension
         doc = ezdxf.new('R2010')  # create a new DXF R2010 drawing, official DXF version name: 'AC1024'
+        
+        if samples_as_cutline:
+            color_s = 1
+        else:
+            color_s = 5
+        if border_as_cutline:
+            color_b = 1
+        else:
+            color_b = 5
         # set units to millilmters
         doc.header['$INSUNITS'] = 4
-        doc.layers.new(name='Sample holder', dxfattribs={'color': 1})
+        doc.layers.new(name='Sample holder', dxfattribs={'color': color_b})
         doc.layers.new(name='Text', dxfattribs={'color': 5})
+        doc.layers.new(name='Samples', dxfattribs={'color': color_s})
         msp = doc.modelspace()  # add new entities to the modelspace
 
         # border line
@@ -328,7 +338,7 @@ class SamplesCollection:
                                 (i[0]+w, y - i[1] - h),
                                 (i[0], y - i[1] - h),
                                 (i[0], y - i[1])]
-                        msp.add_lwpolyline(points, dxfattribs={'layer': 'Sample holder'})
+                        msp.add_lwpolyline(points, dxfattribs={'layer': 'Samples'})
 
                         msp.add_text("ID: %s" %ids,
                     dxfattribs={
@@ -455,11 +465,11 @@ class SamplesCollection:
                 sample = self.samples[index]
                 for element in sample.elements.values():
                     if element['info']['step'] == idx:
-                        points = [(coord[0], y - coord[1]),
-                                (coord[0]+w, y - coord[1]),
-                                (coord[0]+w, y - coord[1] - h),
-                                (coord[0], y - coord[1] - h),
-                                (coord[0], y - coord[1])]
+                        points = [(coord[0] + element['xi'], y - coord[1] - element['yi']),
+                                (coord[0] + element['xf'], y - coord[1] - element['yi']),
+                                (coord[0] + element['xf'], y - coord[1] - element['yf']),
+                                (coord[0] + element['xi'], y - coord[1] - element['yf']),
+                                (coord[0] + element['xi'], y - coord[1] - element['yi'])]
                         msp.add_lwpolyline(points, dxfattribs={'layer': 'Sample holder'})
                         if labels:
                             tick = ''
